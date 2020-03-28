@@ -5,7 +5,7 @@ using UnityEngine;
 public class Node
 {
     // all adjacent nodes
-    LinkedList<Node> adjacents = new LinkedList<Node>();
+    public LinkedList<Node> adjacents = new LinkedList<Node>();
 
     // ints
     // virus's floating freely
@@ -31,7 +31,7 @@ public class Node
     // the number of viruses needed for killing to be at 100% rate, lower than this number and the viruses die slower, higher and they die even faster
     public int breakEvenPoint;
 
-    public Node(int freeVirusStart, int whiteBloodStart, int bodyCells, int infectBodyStart, int infectWhiteBloodStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
+    public Node(int freeVirusStart, int whiteBloodStart, int bodyCells, int infectBodyStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
         freeViruses = freeVirusStart;
         whiteBloodCount = whiteBloodStart;
         orignalBodyCellCount = bodyCells;
