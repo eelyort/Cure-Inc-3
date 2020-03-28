@@ -60,7 +60,8 @@ public class MainGame : MonoBehaviour
 		nodeList.AddLast(node10);
 		nodeList.AddLast(node11);
 		
-		
+		firstNode = nodeList.First;
+		currentNode = firstNode;
 		
 		firstNode = nodeList.First;
 		currentNode = firstNode;
