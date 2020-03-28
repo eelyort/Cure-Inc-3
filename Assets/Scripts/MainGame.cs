@@ -32,7 +32,6 @@ public class MainGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
 		currentNode = currentNode.Next;
 		
     }
