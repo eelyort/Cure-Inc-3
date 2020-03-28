@@ -36,6 +36,7 @@ public class MainGame : MonoBehaviour
 	// Start is called before the first frame update
     void Start()
     {
+		//Create nodes
         Node node1 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
 		Node node2 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
 		Node node3 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
@@ -48,7 +49,8 @@ public class MainGame : MonoBehaviour
 		Node node10 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
 		Node node11 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
 		
-		nodeList.AddFirst(node1);
+		//Adds nodes to nodeList
+		nodeList.AddLast(node1);
 		nodeList.AddLast(node2);
 		nodeList.AddLast(node3);
 		nodeList.AddLast(node4);
@@ -63,7 +65,66 @@ public class MainGame : MonoBehaviour
 		firstNode = nodeList.First;
 		currentNode = firstNode;
 		
-		firstNode = nodeList.First;
+		//Add adjacent nodes for node1
+		currentNode.Value.adjacents.AddLast(node2);
+		currentNode.Value.adjacents.AddLast(node3);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node2
+		currentNode.Value.adjacents.AddLast(node1);
+		currentNode.Value.adjacents.AddLast(node3);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node3
+		currentNode.Value.adjacents.AddLast(node1);
+		currentNode.Value.adjacents.AddLast(node2);
+		currentNode.Value.adjacents.AddLast(node4);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node4
+		currentNode.Value.adjacents.AddLast(node3);
+		currentNode.Value.adjacents.AddLast(node5);
+		currentNode.Value.adjacents.AddLast(node6);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node5
+		currentNode.Value.adjacents.AddLast(node4);
+		currentNode.Value.adjacents.AddLast(node6);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node6
+		currentNode.Value.adjacents.AddLast(node4);
+		currentNode.Value.adjacents.AddLast(node5);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node7
+		currentNode.Value.adjacents.AddLast(node8);
+		currentNode.Value.adjacents.AddLast(node9);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node8
+		currentNode.Value.adjacents.AddLast(node7);
+		currentNode.Value.adjacents.AddLast(node9);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node9
+		currentNode.Value.adjacents.AddLast(node7);
+		currentNode.Value.adjacents.AddLast(node8);
+		currentNode.Value.adjacents.AddLast(node10);
+		currentNode.Value.adjacents.AddLast(node11);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node10
+		currentNode.Value.adjacents.AddLast(node9);
+		currentNode.Value.adjacents.AddLast(node11);
+		currentNode = currentNode.Next;
+		
+		//Add adjacent nodes for node11
+		currentNode.Value.adjacents.AddLast(node9);
+		currentNode.Value.adjacents.AddLast(node10);
+		currentNode = currentNode.Next;
+		
+		
 		currentNode = firstNode;
     }
 
@@ -75,6 +136,7 @@ public class MainGame : MonoBehaviour
 			currentNode.Value.tick();
 			currentNode = currentNode.Next;
 		}
+		
 		
     }
 }
