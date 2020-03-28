@@ -5,14 +5,13 @@ using UnityEngine;
 public class MainGame : MonoBehaviour
 {
 	//Variables
-	LinkedList<int> nodeList = new LinkedList<int>();
-	LinkedListNode<int> firstNode;
-	LinkedListNode<int> currentNode;
+	LinkedList<Node> nodeList = new LinkedList<Node>();
+	LinkedListNode<Node> firstNode;
+	LinkedListNode<Node> currentNode;
 	
 	int difficulty = 1;
 	int enemySpawnRate = 1;
 	int playerSpawnRate = 1;
-	int tickCount = 0;
 	
 	
 	
@@ -32,7 +31,10 @@ public class MainGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		currentNode = currentNode.Next;
+		while(currentNode != null){
+			currentNode.Value.tick();
+			currentNode = currentNode.Next;
+		}
 		
     }
 }
