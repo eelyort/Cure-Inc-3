@@ -13,7 +13,7 @@ public class MainGame : MonoBehaviour
 	int enemySpawnRate = 1;
 	int playerSpawnRate = 1;
 	
-	
+	int freeWhiteBloodCells = 0;
 	
 	
 	
@@ -31,6 +31,7 @@ public class MainGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		freeWhiteBloodCells += playerSpawnRate;
 		while(currentNode != null){
 			currentNode.Value.tick();
 			currentNode = currentNode.Next;
