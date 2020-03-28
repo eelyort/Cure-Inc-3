@@ -5,32 +5,33 @@ using UnityEngine;
 public class Node
 {
     // all adjacent nodes
-    LinkedList<Node> adjacents = new LinkedList<Node>();
+    public LinkedList<Node> adjacents = new LinkedList<Node>();
 
     // ints
     // virus's floating freely
-    int freeViruses;
-    int whiteBloodCount;
+    public int freeViruses;
+    public int whiteBloodCount;
     // safe body cells
-    int uninfectedBodyCells;
-    int infectedBodyCells;
-    int orignalBodyCellCount;
-    int infectedWhiteBloodCells;
+    public int uninfectedBodyCells;
+    public int infectedBodyCells;
+    public int orignalBodyCellCount;
+    public int infectedWhiteBloodCells;
 
     // game settings, should set in main cuz difficultly levels
     // V: virus, WB: white blood cell, BC: body cell, ded: dead/killed, inf: infected, C: cells, FV: free virus
-    double dedVperWB;
-    double dedWBperdedV;
-    double dedICperWB;
-    double infCperFV;
-    double FVperIC;
-    double spreadPerFV;
+    public double dedVperWB;
+    public double dedWBperdedV;
+    public double dedICperWB;
+    public double infCperFV;
+    public double FVperIC;
+    public double chanceICbursts;
+    public double spreadPerFV;
     // % (0-1) of the time that a white blood cell resists a virus infection, 1 (100%) makes it so white blood cells cannot be infected
-    double whiteResistanceToInfection;
+    public double whiteResistanceToInfection;
     // the number of viruses needed for killing to be at 100% rate, lower than this number and the viruses die slower, higher and they die even faster
-    int breakEvenPoint;
+    public int breakEvenPoint;
 
-    public Node(int freeVirusStart, int whiteBloodStart, int bodyCells, int infectBodyStart, int infectWhiteBloodStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
+    public Node(int freeVirusStart, int whiteBloodStart, int bodyCells, int infectBodyStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
         freeViruses = freeVirusStart;
         whiteBloodCount = whiteBloodStart;
         orignalBodyCellCount = bodyCells;
@@ -43,6 +44,7 @@ public class Node
         dedICperWB = deadInfectedCellsperVirus;
         infCperFV = infectedCellsperVirus;
         FVperIC = virusesPerInfectedCell;
+        this.chanceICbursts = chanceICbursts;
         spreadPerFV = spreadPerVirus;
         // resistance
         whiteResistanceToInfection = whiteBloodResistance;
@@ -51,7 +53,7 @@ public class Node
     }
 
     // processes on tick
-    void tick() {
+    public int tick() {
         // variable to add in some randomness
         double jiggle = Random.Range(0.0f, 0.4f) + 0.8;
 
@@ -116,5 +118,10 @@ public class Node
 
         // new viruses born from infected cells
         freeViruses += (int)(FVperIC * (infectedWhiteBloodCells + infectedBodyCells));
+
+        if(freeViruses == 0 || infectedBodyCells == 0 || infectedWhiteBloodCells == 0) {
+            return whiteBloodCount;
+        }
+        return 0;
     }
 }
