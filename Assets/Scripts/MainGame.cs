@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class MainGame : MonoBehaviour
 {
-	//Variables
+	//Node variables
 	LinkedList<Node> nodeList = new LinkedList<Node>();
 	LinkedListNode<Node> firstNode;
 	LinkedListNode<Node> currentNode;
+	
+	bool paused = false;
 	
 	int freeVirusStart; 
 	int whiteBloodStart; 
@@ -22,8 +24,6 @@ public class MainGame : MonoBehaviour
 	double spreadPerVirus;
 	double whiteBloodResistance;
 	int breakEvenPoint;
-	
-
 
 	int difficulty = 1;
 	int enemySpawnRate = 1;
@@ -33,9 +33,9 @@ public class MainGame : MonoBehaviour
 	
 	
 	
+	
 	// Start is called before the first frame update
-    void Start()
-    {
+    void Start(){
 		//Create nodes
         Node node1 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
 		Node node2 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
@@ -127,16 +127,24 @@ public class MainGame : MonoBehaviour
 		
 		currentNode = firstNode;
     }
+	
+	public void pauseGame(){
+		paused = true;
+	}
+	
+	public void unpauseGame(){
+		paused = false;
+	}
 
     // Update is called once per frame
-    void Update()
-    {
-		freeWhiteBloodCells += playerSpawnRate;
-		while(currentNode != null){
-			currentNode.Value.tick();
-			currentNode = currentNode.Next;
+    void Update(){
+		if(!paused){
+			freeWhiteBloodCells += playerSpawnRate;
+			while(currentNode != null){
+				currentNode.Value.tick();
+				currentNode = currentNode.Next;
+			}
 		}
-		
 		
     }
 }
