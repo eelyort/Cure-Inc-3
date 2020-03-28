@@ -9,27 +9,27 @@ public class Node
 
     // ints
     // virus's floating freely
-    int freeViruses;
-    int whiteBloodCount;
+    public int freeViruses;
+    public int whiteBloodCount;
     // safe body cells
-    int uninfectedBodyCells;
-    int infectedBodyCells;
-    int orignalBodyCellCount;
-    int infectedWhiteBloodCells;
+    public int uninfectedBodyCells;
+    public int infectedBodyCells;
+    public int orignalBodyCellCount;
+    public int infectedWhiteBloodCells;
 
     // game settings, should set in main cuz difficultly levels
     // V: virus, WB: white blood cell, BC: body cell, ded: dead/killed, inf: infected, C: cells, FV: free virus
-    double dedVperWB;
-    double dedWBperdedV;
-    double dedICperWB;
-    double infCperFV;
-    double FVperIC;
-    double chanceICbursts;
-    double spreadPerFV;
+    public double dedVperWB;
+    public double dedWBperdedV;
+    public double dedICperWB;
+    public double infCperFV;
+    public double FVperIC;
+    public double chanceICbursts;
+    public double spreadPerFV;
     // % (0-1) of the time that a white blood cell resists a virus infection, 1 (100%) makes it so white blood cells cannot be infected
-    double whiteResistanceToInfection;
+    public double whiteResistanceToInfection;
     // the number of viruses needed for killing to be at 100% rate, lower than this number and the viruses die slower, higher and they die even faster
-    int breakEvenPoint;
+    public int breakEvenPoint;
 
     public Node(int freeVirusStart, int whiteBloodStart, int bodyCells, int infectBodyStart, int infectWhiteBloodStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
         freeViruses = freeVirusStart;
@@ -53,7 +53,7 @@ public class Node
     }
 
     // processes on tick
-    int tick() {
+    public int tick() {
         // variable to add in some randomness
         double jiggle = Random.Range(0.0f, 0.4f) + 0.8;
 
