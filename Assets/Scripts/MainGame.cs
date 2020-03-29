@@ -204,6 +204,12 @@ public class MainGame : MonoBehaviour
 	public long getTickCount(){
 		return tickCount;
 	}
+
+	public long getScore()
+	{
+		long a = getTickCount();
+		return a / 10;
+	}
 	
 
 	public int getFreeWBC()

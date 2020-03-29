@@ -10,13 +10,13 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        text.GetComponent<Text>().text = "Score: 0\nTime Remaining: 0";
+        text.GetComponent<Text>().text = "Score: " + temp.GetComponent<MainGame>().getScore() + "\nTime Remaining: " + temp.GetComponent<MainGame>().getTickCount();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        text.GetComponent<Text>().text = "Score: 0\nTime Remaining: 1";
+        text.GetComponent<Text>().text = "Score: " + temp.GetComponent<MainGame>().getScore() + "\nTime Remaining: " + temp.GetComponent<MainGame>().getTickCount();
     }
 }

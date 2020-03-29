@@ -6,13 +6,15 @@ using UnityEngine.UI;
 public class WinLoss : MonoBehaviour
 {
     public GameObject text;
+    public GameObject temp;
     // Start is called before the first frame update
     void Start()
     {
-        string closer = "\nFinal Score: 0"; //Add score
+        string closer = "\nFinal Score: "; //Add score
+        closer += temp.GetComponent<MainGame>().getScore();
         //Replace with boolean method to find if its a win or loss
-        bool temp = true;
-        if(temp)
+        bool tempbool = true;
+        if(tempbool)
         {
             text.GetComponent<Text>().text = "Congrats! You won!" + closer;
         }
