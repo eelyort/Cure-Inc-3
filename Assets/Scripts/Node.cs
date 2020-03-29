@@ -58,12 +58,152 @@ public class Node
     }
 
     void ranJiggle(out double jiggle) {
-        jiggle = (Random.Range(0.0f, 1.9f) + 0.05) * speedThrottler;
+        //jiggle = (Random.Range(0.0f, 1.9f) + 0.05) * speedThrottler;
+        jiggle = speedThrottler;
         // Debug.Log("jiggle: " + jiggle/speedThrottler);
     }
 
     // processes on tick
     public int tick() {
+        // new code
+        return tickTwo();
+
+        // old code
+        // return tickOne();
+    }
+    private int tickTwo() {
+        // retry with all the variables remaing constant until end when results r tallied
+        // tallies of how much to change each value at end of this function
+        long freeVirusesTally = 0;
+        long whiteBloodCountTally = 0;
+        long infectedWhiteBloodCellsTally = 0;
+        long uninfectedBodyCellsTally = 0;
+        long infectedBodyCellsTally = 0;
+
+        // variable to add in some randomness
+        double jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
+
+        // new viruses born from bursting infected cells, at least 1 bursts (if there is at least one)
+        // from white blood cells
+        ranJiggle(out jiggle);
+        // int temp3 = Mathf.Min((int)infectedWhiteBloodCells, Mathf.Max(1, (int)(chanceICbursts * infectedWhiteBloodCells * jiggle)));
+        int explodedWhiteBlood = atLeastOneifOne(infectedWhiteBloodCells, chanceICbursts * infectedWhiteBloodCells * jiggle);
+        freeVirusesTally += (long)(explodedWhiteBlood * FVperIC);
+        infectedWhiteBloodCellsTally -= explodedWhiteBlood;
+        // from body cells
+        ranJiggle(out jiggle);
+        int explodedBody = atLeastOneifOne(infectedBodyCells, chanceICbursts * infectedBodyCells * jiggle);
+        freeVirusesTally += (long)(explodedBody * FVperIC);
+        infectedBodyCellsTally -= explodedBody;
+        // Debug.Log("Exploded Body: " + explodedBody + ", double: " + chanceICbursts * infectedBodyCells * jiggle);
+        // Debug.Log("chance: " + chanceICbursts + ", infectedBodyCells: " + infectedBodyCells + ", jiggle: " + jiggle/speedThrottler);
+
+        // white blood kills viruses, but also dies after eating a certain amount
+        int dedViruses = atLeastOneifOne(freeViruses, (dedVperWB * (double)whiteBloodCount * (double)freeViruses / breakEvenPoint * jiggle));
+        freeVirusesTally -= dedViruses;
+        whiteBloodCountTally -= (int)(dedViruses * dedWBperdedV);
+
+        // pecentage white blood cells vs body cells
+        double percentWhite = (double)(whiteBloodCount + infectedWhiteBloodCells) / (double)(infectedBodyCells + uninfectedBodyCells);
+        // percentages of infected vs. noninfecting
+        double percentWhiteInfected = (double)(infectedWhiteBloodCells) / (double)(infectedWhiteBloodCells + whiteBloodCount);
+        double percentBodyInfected = (double)(infectedBodyCells) / (double)(infectedBodyCells + uninfectedBodyCells);
+
+        // attempt to kill infected cells
+        // infected white blood cells, at least one dies
+        ranJiggle(out jiggle);
+        infectedWhiteBloodCellsTally -= atLeastOneifOne(infectedWhiteBloodCells, percentWhite * percentWhiteInfected * dedICperWB * whiteBloodCount * infectedWhiteBloodCells * jiggle * whiteLikelyHoodMod);
+        // infected body cells, at least one dies
+        ranJiggle(out jiggle);
+        infectedBodyCellsTally -= atLeastOneifOne(infectedBodyCells, (1 - percentWhite) * percentBodyInfected * dedICperWB * whiteBloodCount * infectedBodyCells * jiggle);
+
+        // Debug.Log(infectedBodyCells);
+
+        // free virus attempt to infect open cells
+        // infect non-infected white blood cells
+        ranJiggle(out jiggle);
+        int newInfectWB = atLeastOneifOne(whiteBloodCount, percentWhite * (1 - percentWhiteInfected) * (1 - whiteResistanceToInfection) * infCperFV * Mathf.Min(freeViruses, breakEvenPoint) * jiggle * whiteLikelyHoodMod);
+        // Debug.Log(string.Format("temp: {0}, percentWhite: {1}, percentWhiteInfected: {2}, whiteRes: {3}, infCperFV: {4}", temp, percentWhite, percentWhiteInfected, whiteResistanceToInfection, infCperFV));
+        infectedWhiteBloodCellsTally += newInfectWB;
+        whiteBloodCountTally -= newInfectWB;
+        // infect non-infected body cells
+        ranJiggle(out jiggle);
+        int newInfectBody = atLeastOneifOne(uninfectedBodyCells, (1 - percentWhite) * (1 - percentBodyInfected) * infCperFV * Mathf.Min(freeViruses, breakEvenPoint) * jiggle);
+        infectedBodyCellsTally += newInfectBody;
+        uninfectedBodyCellsTally -= newInfectBody;
+        Debug.Log("newInfectBody: " + newInfectBody);
+        // viruses that infected r no longer free in the system
+        freeVirusesTally -= (newInfectWB + newInfectBody);
+
+        // virus spread to adjacent nodes
+        ranJiggle(out jiggle);
+        int numMigrators = (int)(freeViruses * spreadPerFV * jiggle);
+        if (numMigrators > 0) {
+            // which adjacent nodes to infect
+            bool[] toInfect = new bool[adjacents.Count];
+            int numSpread = 0;
+            for (int i = 0; i < adjacents.Count; i++) {
+                double ran = Random.Range(0.0f, 1.0f);
+                ranJiggle(out jiggle);
+                // TODO: check threshold number
+                if (ran < (freeViruses * spreadPerFV * jiggle)) {
+                    toInfect[i] = true;
+                    numSpread++;
+                }
+                else {
+                    toInfect[i] = false;
+                }
+            }
+            if (numSpread > 0) {
+                // infect all nodes which should be infected
+                LinkedListNode<Node> curr = adjacents.First;
+                for (int i = 0; i < adjacents.Count; i++) {
+                    if (toInfect[i]) {
+                        curr.Value.freeViruses += (ulong)(numMigrators / numSpread);
+                    }
+                    curr = curr.Next;
+                }
+                freeVirusesTally -= (numMigrators / numSpread) * (numMigrators / (numMigrators / numSpread));
+            }
+        }
+
+        // update values and clamp as necessary
+        // free viruses, [0, 800000]
+        freeViruses = (ulong)Mathf.Max(0, Mathf.Min(800000, (long)freeViruses + freeVirusesTally));
+        // white blood cell count, [0, 80000]
+        whiteBloodCount = (uint)Mathf.Max(0, Mathf.Min(80000, (int)whiteBloodCount + whiteBloodCountTally));
+        // infected white blood cells, [0, 80000]
+        infectedWhiteBloodCells = (uint)Mathf.Max(0, Mathf.Min(80000, (int)infectedWhiteBloodCells + infectedWhiteBloodCellsTally));
+        // uninfected body cells, [0, inf)
+        uninfectedBodyCells = (uint)Mathf.Max(0, (int)uninfectedBodyCells + uninfectedBodyCellsTally);
+        // infected body cells, [0, originalBodyCells]
+        infectedBodyCells = (uint)Mathf.Max(0, Mathf.Min(orignalBodyCellCount, (int)infectedBodyCells + infectedBodyCellsTally));
+
+        if (freeViruses == 0 || infectedBodyCells == 0 || infectedWhiteBloodCells == 0) {
+            return (int)whiteBloodCount;
+        }
+        return 0;
+    }
+    // so i found myself doing this multiple multiple times so its here now for easier debugging lol
+    // takes a number, calcVal, and returns it as long as it is greater than 0, BUT returns 1 otherwise if there is at least one entity(val) to change
+    private int atLeastOneifOne(int val, int calcVal) {
+        return Mathf.Min(val, Mathf.Max(1, calcVal));
+    }
+    // overloads
+    private int atLeastOneifOne(int val, double calcVal) {
+        return atLeastOneifOne(val, (int)calcVal);
+    }
+    private int atLeastOneifOne(uint val, int calcVal) {
+        return atLeastOneifOne((int)val, calcVal);
+    }
+    private int atLeastOneifOne(uint val, double calcVal) {
+        return atLeastOneifOne((int)val, (int)calcVal);
+    }
+    private int atLeastOneifOne(ulong val, double calcVal) {
+        return atLeastOneifOne((int)val, (int)calcVal);
+    }
+
+    private int tickOne() {
         // variable to add in some randomness
         double jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
 
@@ -80,13 +220,14 @@ public class Node
         infectedBodyCells -= temp4;
 
         // limit amount of viruses so no overflow
-        if(!(freeViruses >= 0 && freeViruses < 1000000000)) {
-            freeViruses = 1000000000;
+        if (!(freeViruses >= 0 && freeViruses < 50000)) {
+            freeViruses = 50000;
         }
 
         // white blood kills viruses, but also dies after eating a certain amount
-        int dedViruses = (int)(dedVperWB * (double)whiteBloodCount * (double)freeViruses/breakEvenPoint * jiggle);
-        freeViruses = (ulong)Mathf.Max(0, (long)freeViruses - dedViruses);
+        int dedViruses = (int)Mathf.Min(freeViruses, (int)(dedVperWB * (double)whiteBloodCount * (double)freeViruses / breakEvenPoint * jiggle));
+        Debug.Log("dedViruses: " + dedViruses);
+        freeViruses -= (uint)dedViruses;
         whiteBloodCount = (uint)Mathf.Max(0, whiteBloodCount - (uint)(dedViruses * dedWBperdedV));
 
         // pecentage white blood cells vs body cells

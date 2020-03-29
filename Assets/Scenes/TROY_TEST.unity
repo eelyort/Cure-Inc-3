@@ -403,17 +403,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FVstart: 1000
-  WBstart: 30
+  WBstart: 10
   bodyCells: 100000
-  infectedBCstart: 8000
-  deadVirusperWhiteBlood: 50
-  deadWBperdeadV: 0
-  deadICperWB: 1
+  infectedBCstart: 3000
+  deadVirusperWhiteBlood: 120
+  deadWBperdeadV: 0.01
+  deadICperWB: 0.4
   infectedCellsperFV: 0.05
   FVperIC: 50
   chanceICbursts: 0.1
-  spreadPerPV: 0.01
-  whiteResistanceToInfection: 0
-  breakEvenPoint: 10000
-  numWBperTick: 0
-  numTicks: 200
+  spreadPerPV: 0.008
+  whiteResistanceToInfection: 0.7
+  breakEvenPoint: 15000
+  numWBperTick: 5
+  numTicks: 300
