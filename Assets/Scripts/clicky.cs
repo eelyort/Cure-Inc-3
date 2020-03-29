@@ -6,7 +6,7 @@ public class clicky : MonoBehaviour
 {
         Color[] Data;
         SpriteRenderer SpriteRenderer;
-    public Color Color;
+    public Color color;
 
 
     public int Width { get { return SpriteRenderer.sprite.texture.width; } }
@@ -48,11 +48,12 @@ public class clicky : MonoBehaviour
                     // Get color data
                     if (x > 0 && x < Width && y > 0 && y < Height)
                     {
-                        Color = Data[y * Width + x];
+                        color = Data[y * Width + x];
                     }
                     break;
                 }
             }
+            Debug.Log("Color: " + color);
         }
     }
 }
