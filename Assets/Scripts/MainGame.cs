@@ -145,6 +145,5 @@ public class MainGame : MonoBehaviour
 				currentNode = currentNode.Next;
 			}
 		}
-		
     }
 }
