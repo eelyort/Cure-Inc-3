@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Node
-{
+public class Node {
     // all adjacent nodes
     public LinkedList<Node> adjacents = new LinkedList<Node>();
 
     // ints
     // virus's floating freely
-    public ulong freeViruses;
-    public uint whiteBloodCount;
-    public uint infectedWhiteBloodCells;
+    ulong freeViruses;
+    uint whiteBloodCount;
+    uint infectedWhiteBloodCells;
     // safe body cells
-    public uint uninfectedBodyCells;
-    public uint infectedBodyCells;
-    public uint orignalBodyCellCount;
+    uint uninfectedBodyCells;
+    uint infectedBodyCells;
+    uint orignalBodyCellCount;
 
     // game settings, should set in main cuz difficultly levels
     // V: virus, WB: white blood cell, BC: body cell, ded: dead/killed, inf: infected, C: cells, FV: free virus
@@ -32,9 +31,12 @@ public class Node
     public int breakEvenPoint;
 
     // slow down the action
-    const double speedThrottler = 0.1;
+    const double speedThrottler = 0.12;
     // white blood cells r more likely to get found cuz they're moving around
     const double whiteLikelyHoodMod = 50;
+
+    // whether the player knows about the infection here
+    public bool hidden;
 
     public Node(ulong freeVirusStart, uint whiteBloodStart, uint bodyCells, uint infectBodyStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
         freeViruses = freeVirusStart;
@@ -42,7 +44,7 @@ public class Node
         orignalBodyCellCount = bodyCells;
         infectedBodyCells = infectBodyStart;
         uninfectedBodyCells = orignalBodyCellCount - infectedBodyCells;
-        
+
         // settings for difficulty level
         dedVperWB = deadVirusperWhiteBlood;
         dedWBperdedV = deadWhiteBloodperDeadVirus;
@@ -55,11 +57,13 @@ public class Node
         whiteResistanceToInfection = whiteBloodResistance;
         // breakeven point
         this.breakEvenPoint = breakEvenPoint;
+
+        hidden = true;
     }
 
     void ranJiggle(out double jiggle) {
-        //jiggle = (Random.Range(0.0f, 1.9f) + 0.05) * speedThrottler;
-        jiggle = speedThrottler;
+        jiggle = (Random.Range(0.0f, 1.9f) + 0.05) * speedThrottler;
+        // jiggle = speedThrottler;
         // Debug.Log("jiggle: " + jiggle/speedThrottler);
     }
 
@@ -71,7 +75,18 @@ public class Node
         // old code
         // return tickOne();
     }
+    public void changeVirusCount(int x) {
+        freeViruses = (ulong)((long)freeViruses + x);
+    }
     private int tickTwo() {
+        // update hidden
+        if (hidden) {
+            double percentRand = Random.Range(0.0f, 1.0f);
+            if (percentRand < ((long)freeViruses / breakEvenPoint)) {
+                hidden = false;
+            }
+        }
+
         // retry with all the variables remaing constant until end when results r tallied
         // tallies of how much to change each value at end of this function
         long freeVirusesTally = 0;
@@ -99,7 +114,7 @@ public class Node
         // Debug.Log("chance: " + chanceICbursts + ", infectedBodyCells: " + infectedBodyCells + ", jiggle: " + jiggle/speedThrottler);
 
         // white blood kills viruses, but also dies after eating a certain amount
-        int dedViruses = atLeastOneifOne(freeViruses, (dedVperWB * (double)whiteBloodCount * (double)freeViruses / breakEvenPoint * jiggle));
+        int dedViruses = atLeastOneifOne(freeViruses, (dedVperWB * (double)whiteBloodCount * ((double)freeViruses / breakEvenPoint) * jiggle));
         freeVirusesTally -= dedViruses;
         whiteBloodCountTally -= (int)(dedViruses * dedWBperdedV);
 
@@ -131,14 +146,14 @@ public class Node
         int newInfectBody = atLeastOneifOne(uninfectedBodyCells, (1 - percentWhite) * (1 - percentBodyInfected) * infCperFV * Mathf.Min(freeViruses, breakEvenPoint) * jiggle);
         infectedBodyCellsTally += newInfectBody;
         uninfectedBodyCellsTally -= newInfectBody;
-        Debug.Log("newInfectBody: " + newInfectBody);
+        // Debug.Log("newInfectBody: " + newInfectBody);
         // viruses that infected r no longer free in the system
         freeVirusesTally -= (newInfectWB + newInfectBody);
 
         // virus spread to adjacent nodes
         ranJiggle(out jiggle);
         int numMigrators = (int)(freeViruses * spreadPerFV * jiggle);
-        if (numMigrators > 0) {
+        if (numMigrators > 0 && freeViruses > (ulong)breakEvenPoint) {
             // which adjacent nodes to infect
             bool[] toInfect = new bool[adjacents.Count];
             int numSpread = 0;
@@ -159,7 +174,7 @@ public class Node
                 LinkedListNode<Node> curr = adjacents.First;
                 for (int i = 0; i < adjacents.Count; i++) {
                     if (toInfect[i]) {
-                        curr.Value.freeViruses += (ulong)(numMigrators / numSpread);
+                        curr.Value.changeVirusCount((int)(numMigrators / numSpread));
                     }
                     curr = curr.Next;
                 }
@@ -178,6 +193,29 @@ public class Node
         uninfectedBodyCells = (uint)Mathf.Max(0, (int)uninfectedBodyCells + uninfectedBodyCellsTally);
         // infected body cells, [0, originalBodyCells]
         infectedBodyCells = (uint)Mathf.Max(0, Mathf.Min(orignalBodyCellCount, (int)infectedBodyCells + infectedBodyCellsTally));
+
+        // last few viruses get yeeted
+        if((freeViruses + (ulong)(infectedBodyCells * FVperIC * chanceICbursts) + (ulong)(infectedWhiteBloodCells * FVperIC * chanceICbursts)) < (ulong)(whiteBloodCount * 5)) {
+            freeViruses = 0;
+            infectedWhiteBloodCells = 0;
+            infectedBodyCells = 0;
+        }
+
+        // dieoff from overpop
+        if(freeViruses > (ulong)(breakEvenPoint * 5)) {
+            freeViruses = (ulong)(.9 * freeViruses);
+        }
+
+        // viruses die off quickly or spread when the host cells die
+        if(uninfectedBodyCells + infectedBodyCells == 0) {
+            // 60% die, 10% migrate
+            LinkedListNode<Node> curr = adjacents.First;
+            while(curr != null) {
+                curr.Value.freeViruses += (ulong)(freeViruses * .1 * (1.0/adjacents.Count));
+                curr = curr.Next;
+            }
+            freeViruses = (ulong)(freeViruses * .3);
+        }
 
         if (freeViruses == 0 || infectedBodyCells == 0 || infectedWhiteBloodCells == 0) {
             return (int)whiteBloodCount;
@@ -297,5 +335,37 @@ public class Node
             return (int)whiteBloodCount;
         }
         return 0;
+    }
+
+    // get functions
+    public long getFreeViruses() {
+        if (hidden) {
+            return 0;
+        }
+        return (long)freeViruses;
+    }
+    public int getWhiteBloodCount() {
+        return (int)whiteBloodCount;
+    }
+    public int getInfectedWhiteBloodCells() {
+        if (hidden) {
+            return 0;
+        }
+        return (int)infectedWhiteBloodCells;
+    }
+    public int getUninfectedBodyCells() {
+        if (hidden) {
+            return (int)orignalBodyCellCount;
+        }
+        return (int)uninfectedBodyCells;
+    }
+    public int getInfectedBodyCells() {
+        if (hidden) {
+            return 0;
+        }
+        return (int)infectedBodyCells;
+    }
+    public int getOriginalCellCount() {
+        return (int)orignalBodyCellCount;
     }
 }

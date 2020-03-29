@@ -25,12 +25,12 @@ public class MainGame : MonoBehaviour
 	double whiteBloodResistance;
 	int breakEvenPoint;
 	
-	ulong totalFreeViruses;
-	uint totalWhiteBloodCount;
-	uint totalInfectedWhiteBloodCells;
-	uint totalUninfectedBodyCells;
-	uint totalInfectedBodyCells;
-	uint totalOrignalBodyCellCount;
+	long totalFreeViruses;
+	int totalWhiteBloodCount;
+	int totalInfectedWhiteBloodCells;
+	int totalUninfectedBodyCells;
+	int totalInfectedBodyCells;
+	int totalOrignalBodyCellCount;
 
 	int difficulty = 1;
 	int enemySpawnRate = 1;
@@ -143,24 +143,24 @@ public class MainGame : MonoBehaviour
 			freeWhiteBloodCells += playerSpawnRate;
 			
 			//Temp variables for summing up node information
-			ulong tempFreeViruses = 0;
-			uint tempWhiteBloodCount = 0;
-			uint tempInfectedWhiteBloodCells = 0;
-			uint tempUninfectedBodyCells = 0;
-			uint tempInfectedBodyCells = 0;
-			uint tempOrignalBodyCellCount = 0;
+			long tempFreeViruses = 0;
+			int tempWhiteBloodCount = 0;
+			int tempInfectedWhiteBloodCells = 0;
+			int tempUninfectedBodyCells = 0;
+			int tempInfectedBodyCells = 0;
+			int tempOrignalBodyCellCount = 0;
 			
 			//Iterates through linkedlist of nodes
 			while(currentNode != null){
 				currentNode.Value.tick();
 				
 				//Sums up information about each nodes
-				tempFreeViruses += currentNode.Value.freeViruses;
-				tempWhiteBloodCount += currentNode.Value.whiteBloodCount;
-				tempInfectedWhiteBloodCells += currentNode.Value.uninfectedBodyCells;
-				tempUninfectedBodyCells += currentNode.Value.uninfectedBodyCells;
-				tempInfectedBodyCells += currentNode.Value.infectedBodyCells;
-				tempOrignalBodyCellCount += currentNode.Value.orignalBodyCellCount;
+				tempFreeViruses += currentNode.Value.getFreeViruses();
+				tempWhiteBloodCount += currentNode.Value.getWhiteBloodCount();
+				tempInfectedWhiteBloodCells += currentNode.Value.getInfectedWhiteBloodCells();
+				tempUninfectedBodyCells += currentNode.Value.getUninfectedBodyCells();
+				tempInfectedBodyCells += currentNode.Value.getInfectedBodyCells();
+				tempOrignalBodyCellCount += currentNode.Value.getOriginalCellCount();
 				
 				//Changes to next node
 				currentNode = currentNode.Next;
