@@ -177,28 +177,28 @@ public class MainGame : MonoBehaviour
 		}
     }
 	
-	public ulong getFreeViruses(){
-		return totalFreeViruses;
+	public long getFreeViruses(){
+		return (long)totalFreeViruses;
 	}
 	
-	public uint getWhiteBloodCount(){
-		return totalWhiteBloodCount;
+	public int getWhiteBloodCount(){
+		return (int)totalWhiteBloodCount;
 	}
 	
-	public uint getInfectedWhiteBloodCells(){
-		return totalInfectedWhiteBloodCells;
+	public int getInfectedWhiteBloodCells(){
+		return (int)totalInfectedWhiteBloodCells;
 	}
 	
-	public uint getUninfectedBodyCells(){
-		return totalUninfectedBodyCells;
+	public int getUninfectedBodyCells(){
+		return (int)totalUninfectedBodyCells;
 	}
 	
-	public uint getInfectedBodyCells(){
-		return totalInfectedBodyCells;
+	public int getInfectedBodyCells(){
+		return (int)totalInfectedBodyCells;
 	}
 	
-	public uint getOrignalBodyCellCount(){
-		return totalOrignalBodyCellCount;
+	public int getOrignalBodyCellCount(){
+		return (int)totalOrignalBodyCellCount;
 	}
 	
 	public long getTickCount(){
