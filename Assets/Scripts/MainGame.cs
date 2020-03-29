@@ -25,12 +25,12 @@ public class MainGame : MonoBehaviour
 	double whiteBloodResistance;
 	int breakEvenPoint;
 	
-	long totalFreeViruses = 0;
-	int totalWhiteBloodCount = 0;
-	int totalInfectedWhiteBloodCells = 0;
-	int totalUninfectedBodyCells = 0;
-	int totalInfectedBodyCells = 0;
-	int totalOrignalBodyCellCount = 0;
+	long totalFreeViruses;
+	int totalWhiteBloodCount;
+	int totalInfectedWhiteBloodCells;
+	int totalUninfectedBodyCells;
+	int totalInfectedBodyCells;
+	int totalOrignalBodyCellCount;
 
 	int difficulty = 1;
 	int enemySpawnRate = 1;
