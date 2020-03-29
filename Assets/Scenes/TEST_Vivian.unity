@@ -326,7 +326,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0, b: 0, a: 0}
   colorMap: {fileID: 1945628688}
-  mainGame: {fileID: 0}
 --- !u!212 &1945628690
 SpriteRenderer:
   m_ObjectHideFlags: 0
