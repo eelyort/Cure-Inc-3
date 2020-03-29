@@ -37,6 +37,7 @@ public class MainGame : MonoBehaviour
 	int playerSpawnRate = 1;
 	
 	int freeWhiteBloodCells = 0;
+	long tickCount = 0;
 	
 	
 	
@@ -138,6 +139,7 @@ public class MainGame : MonoBehaviour
     // Update is called once per frame
     void Update(){
 		if(!paused){	//Checks if unpaused
+			tickCount += 1;
 			freeWhiteBloodCells += playerSpawnRate;
 			
 			//Temp variables for summing up node information
@@ -197,6 +199,10 @@ public class MainGame : MonoBehaviour
 	
 	public int getOrignalBodyCellCount(){
 		return totalOrignalBodyCellCount;
+	}
+	
+	public long getTickCount(){
+		return tickCount;
 	}
 	
 	public void pauseGame(){
