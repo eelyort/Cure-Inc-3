@@ -173,7 +173,6 @@ public class MainGame : MonoBehaviour
 			totalOrignalBodyCellCount = tempOrignalBodyCellCount;
 			
 		}
-		
     }
 	
 	public long getFreeViruses(){
