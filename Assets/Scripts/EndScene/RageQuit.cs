@@ -19,9 +19,9 @@ public class RageQuit : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void endGame()
     {
-        
+        Debug.Log("Quit!");
+        Application.Quit();
     }
 }
