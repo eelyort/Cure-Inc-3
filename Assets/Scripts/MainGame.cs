@@ -31,16 +31,13 @@ public class MainGame : MonoBehaviour
 	int totalUninfectedBodyCells;
 	int totalInfectedBodyCells;
 	int totalOrignalBodyCellCount;
-	
-	
-	//Difficulty variables
+
 	int difficulty = 1;
 	int enemySpawnRate = 1;
 	int playerSpawnRate = 1;
 	
 	int freeWhiteBloodCells = 0;
 	long tickCount = 0;
-	Text scoreText = GameObject.Find("Canvas/BLText").GetComponent<Text>();
 
     // which zone is currently selected, -1 is none
     int selected = -1;
