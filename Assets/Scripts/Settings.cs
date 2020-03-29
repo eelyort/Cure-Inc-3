@@ -16,7 +16,9 @@ public struct GameSettings {
     public double spreadPerVirus;
     public double whiteBloodResistance;
     public int breakEvenPoint;
+    public int startInfectedNodes;
 
+    public int playerSpawnRate;
 
     public GameSettings(ulong FVStart, uint WBStart, uint BC, uint IBCStart, double a, double b, double c, double d, double e, double f, double g, double h, int breakEvenPoint) {
         freeVirusStart = FVStart;
@@ -32,5 +34,9 @@ public struct GameSettings {
         spreadPerVirus = g;
         whiteBloodResistance = h;
         this.breakEvenPoint = breakEvenPoint;
+
+        startInfectedNodes = 1;
+
+        playerSpawnRate = 10;
     }
 }

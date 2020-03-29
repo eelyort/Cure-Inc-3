@@ -40,7 +40,8 @@ public class TroyTest : MonoBehaviour
         for (int i = 0; i < numTicks; i++) {
             Debug.Log(string.Format(format, i, hi.getFreeViruses(), hi.getWhiteBloodCount(), hi.getInfectedWhiteBloodCells(), hi.getUninfectedBodyCells(), hi.getInfectedBodyCells(), adjacent.getFreeViruses()));
             hi.changeVirusCount((int)numWBperTick);
-            hi.tick();
+            bool hidden;
+            hi.tick(out hidden);
         }
     }
 
