@@ -8,6 +8,7 @@ public class clicky : MonoBehaviour
         SpriteRenderer spriteRenderer;
     public Color color;
     public GameObject colorMap;
+    public MainGame mainGame;
 
     public int Width { get { return spriteRenderer.sprite.texture.width; } }
     public int Height
@@ -24,6 +25,8 @@ public class clicky : MonoBehaviour
         data = spriteRenderer.sprite.texture.GetPixels();
 
         colorMap.GetComponent<Renderer>().enabled = false;
+
+        mainGame = gameObject.GetComponent<MainGame>();
     }
     void Update()
     {
@@ -62,8 +65,8 @@ public class clicky : MonoBehaviour
             */
             Color color;
             bool success = GetSpritePixelColorUnderMousePointer(spriteRenderer, out color);
-            Debug.Log("Success? " + success + ", color: " + color);
-            Debug.Log("G: " + color.g);
+            // Debug.Log("Success? " + success + ", color: " + color);
+            // Debug.Log("G: " + color.g);
         }
     }
     public bool GetSpritePixelColorUnderMousePointer(SpriteRenderer spriteRenderer, out Color color) {

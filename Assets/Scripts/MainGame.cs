@@ -38,8 +38,9 @@ public class MainGame : MonoBehaviour
 	
 	int freeWhiteBloodCells = 0;
 	long tickCount = 0;
-	
-	
+
+    // which zone is currently selected, -1 is none
+    int selected = -1;
 	
 	
 	// Start is called before the first frame update
