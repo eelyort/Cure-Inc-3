@@ -9,13 +9,13 @@ public class Node
 
     // ints
     // virus's floating freely
-    public long freeViruses;
-    public int whiteBloodCount;
-    public int infectedWhiteBloodCells;
+    public ulong freeViruses;
+    public uint whiteBloodCount;
+    public uint infectedWhiteBloodCells;
     // safe body cells
-    public int uninfectedBodyCells;
-    public int infectedBodyCells;
-    public int orignalBodyCellCount;
+    public uint uninfectedBodyCells;
+    public uint infectedBodyCells;
+    public uint orignalBodyCellCount;
 
     // game settings, should set in main cuz difficultly levels
     // V: virus, WB: white blood cell, BC: body cell, ded: dead/killed, inf: infected, C: cells, FV: free virus
@@ -36,7 +36,7 @@ public class Node
     // white blood cells r more likely to get found cuz they're moving around
     const double whiteLikelyHoodMod = 50;
 
-    public Node(long freeVirusStart, int whiteBloodStart, int bodyCells, int infectBodyStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
+    public Node(ulong freeVirusStart, uint whiteBloodStart, uint bodyCells, uint infectBodyStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
         freeViruses = freeVirusStart;
         whiteBloodCount = whiteBloodStart;
         orignalBodyCellCount = bodyCells;
@@ -57,15 +57,37 @@ public class Node
         this.breakEvenPoint = breakEvenPoint;
     }
 
+    void ranJiggle(out double jiggle) {
+        jiggle = (Random.Range(0.0f, 1.9f) + 0.05) * speedThrottler;
+        // Debug.Log("jiggle: " + jiggle/speedThrottler);
+    }
+
     // processes on tick
     public int tick() {
         // variable to add in some randomness
         double jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
 
+        // new viruses born from bursting infected cells
+        // from white blood cells
+        ranJiggle(out jiggle);
+        uint temp3 = (uint)Mathf.Min((int)infectedWhiteBloodCells, Mathf.Max(1, (int)(chanceICbursts * infectedWhiteBloodCells * jiggle)));
+        freeViruses += (ulong)(temp3 * FVperIC);
+        infectedWhiteBloodCells -= temp3;
+        // from body cells
+        ranJiggle(out jiggle);
+        uint temp4 = (uint)Mathf.Min((int)infectedBodyCells, Mathf.Max(1, (int)(chanceICbursts * infectedBodyCells * jiggle)));
+        freeViruses += (ulong)(temp4 * FVperIC);
+        infectedBodyCells -= temp4;
+
+        // limit amount of viruses so no overflow
+        if(!(freeViruses >= 0 && freeViruses < 1000000000)) {
+            freeViruses = 1000000000;
+        }
+
         // white blood kills viruses, but also dies after eating a certain amount
         int dedViruses = (int)(dedVperWB * (double)whiteBloodCount * (double)freeViruses/breakEvenPoint * jiggle);
-        freeViruses = (long)Mathf.Max(0, freeViruses - dedViruses);
-        whiteBloodCount = Mathf.Max(0, whiteBloodCount - (int)(dedViruses * dedWBperdedV));
+        freeViruses = (ulong)Mathf.Max(0, (long)freeViruses - dedViruses);
+        whiteBloodCount = (uint)Mathf.Max(0, whiteBloodCount - (uint)(dedViruses * dedWBperdedV));
 
         // pecentage white blood cells vs body cells
         double percentWhite = (double)(whiteBloodCount + infectedWhiteBloodCells) / (double)(infectedBodyCells + uninfectedBodyCells);
@@ -75,31 +97,31 @@ public class Node
 
         // attempt to kill infected cells
         // infected white blood cells
-        jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
-        infectedWhiteBloodCells = Mathf.Max(0, infectedWhiteBloodCells - Mathf.Max(1, (int)(percentWhite * percentWhiteInfected * dedICperWB * whiteBloodCount * infectedWhiteBloodCells * jiggle * whiteLikelyHoodMod)));
+        ranJiggle(out jiggle);
+        infectedWhiteBloodCells = (uint)Mathf.Max(0, infectedWhiteBloodCells - Mathf.Max(1, (int)(percentWhite * percentWhiteInfected * dedICperWB * whiteBloodCount * infectedWhiteBloodCells * jiggle * whiteLikelyHoodMod)));
         // infected body cells
-        jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
-        infectedBodyCells = Mathf.Max(0, infectedBodyCells - Mathf.Max(1, (int)((1 - percentWhite) * percentBodyInfected * dedICperWB * whiteBloodCount * infectedBodyCells * jiggle)));
+        ranJiggle(out jiggle);
+        infectedBodyCells = (uint)Mathf.Max(0, infectedBodyCells - Mathf.Max(1, (int)((1 - percentWhite) * percentBodyInfected * dedICperWB * whiteBloodCount * infectedBodyCells * jiggle)));
 
         // Debug.Log(infectedBodyCells);
 
         // free virus attempt to infect open cells
         // infect non-infected white blood cells
-        jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
-        int temp = (int)(percentWhite * (1 - percentWhiteInfected) * (1 - whiteResistanceToInfection) * infCperFV * Mathf.Max(freeViruses, breakEvenPoint) * jiggle * whiteLikelyHoodMod);
+        ranJiggle(out jiggle);
+        int temp = (int)(percentWhite * (1 - percentWhiteInfected) * (1 - whiteResistanceToInfection) * infCperFV * Mathf.Min(freeViruses, breakEvenPoint) * jiggle * whiteLikelyHoodMod);
         // Debug.Log(string.Format("temp: {0}, percentWhite: {1}, percentWhiteInfected: {2}, whiteRes: {3}, infCperFV: {4}", temp, percentWhite, percentWhiteInfected, whiteResistanceToInfection, infCperFV));
-        infectedWhiteBloodCells += Mathf.Min(temp, whiteBloodCount);
-        whiteBloodCount = Mathf.Max(0, whiteBloodCount - temp);
+        infectedWhiteBloodCells += (uint)Mathf.Min(temp, whiteBloodCount);
+        whiteBloodCount = (uint)Mathf.Max(0, whiteBloodCount - temp);
         // infect non-infected body cells
-        jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
-        int temp2 = (int)((1 - percentWhite) * (1 - percentBodyInfected) * infCperFV * Mathf.Max(freeViruses, breakEvenPoint) * jiggle);
-        infectedBodyCells += Mathf.Min(temp2, uninfectedBodyCells);
-        uninfectedBodyCells = Mathf.Max(0, uninfectedBodyCells - temp2);
+        ranJiggle(out jiggle);
+        int temp2 = (int)((1 - percentWhite) * (1 - percentBodyInfected) * infCperFV * Mathf.Min(freeViruses, breakEvenPoint) * jiggle);
+        infectedBodyCells += (uint)Mathf.Min(temp2, uninfectedBodyCells);
+        uninfectedBodyCells = (uint)Mathf.Max(0, uninfectedBodyCells - temp2);
         // viruses that infected r no longer free in the system
-        freeViruses = (long)Mathf.Max(0, freeViruses - (temp + temp2));
+        freeViruses = (ulong)Mathf.Max(0, (long)freeViruses - (temp + temp2));
 
         // virus spread to adjacent nodes
-        jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
+        ranJiggle(out jiggle);
         int numMigrators = (int)(freeViruses * spreadPerFV * jiggle);
         if (numMigrators > 0) {
             // which adjacent nodes to infect
@@ -107,7 +129,7 @@ public class Node
             int numSpread = 0;
             for (int i = 0; i < adjacents.Count; i++) {
                 double ran = Random.Range(0.0f, 1.0f);
-                jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
+                ranJiggle(out jiggle);
                 // TODO: check threshold number
                 if (ran < (freeViruses * spreadPerFV * jiggle)) {
                     toInfect[i] = true;
@@ -122,28 +144,16 @@ public class Node
                 LinkedListNode<Node> curr = adjacents.First;
                 for (int i = 0; i < adjacents.Count; i++) {
                     if (toInfect[i]) {
-                        curr.Value.freeViruses += numMigrators / numSpread;
+                        curr.Value.freeViruses += (ulong)(numMigrators / numSpread);
                     }
                     curr = curr.Next;
                 }
-                freeViruses = (long)Mathf.Max(0, freeViruses - (numMigrators / numSpread) * (numMigrators / (numMigrators / numSpread)));
+                freeViruses = (ulong)Mathf.Max(0, freeViruses - (ulong)((numMigrators / numSpread) * (numMigrators / (numMigrators / numSpread))));
             }
         }
 
-        // new viruses born from bursting infected cells
-        // from white blood cells
-        jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
-        int temp3 = Mathf.Min(infectedWhiteBloodCells, Mathf.Max(1, (int)(chanceICbursts * infectedWhiteBloodCells * jiggle)));
-        freeViruses += (int)(temp3 * FVperIC);
-        infectedWhiteBloodCells -= temp3;
-        // from body cells
-        jiggle = (Random.Range(0.0f, 0.4f) + 0.8) * speedThrottler;
-        int temp4 = Mathf.Min(infectedBodyCells, Mathf.Max(1, (int)(chanceICbursts * infectedBodyCells * jiggle)));
-        freeViruses += (int)(temp4 * FVperIC);
-        infectedBodyCells -= temp4;
-
         if (freeViruses == 0 || infectedBodyCells == 0 || infectedWhiteBloodCells == 0) {
-            return whiteBloodCount;
+            return (int)whiteBloodCount;
         }
         return 0;
     }

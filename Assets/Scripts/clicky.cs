@@ -63,6 +63,7 @@ public class clicky : MonoBehaviour
             Color color;
             bool success = GetSpritePixelColorUnderMousePointer(spriteRenderer, out color);
             Debug.Log("Success? " + success + ", color: " + color);
+            Debug.Log("G: " + color.g);
         }
     }
     public bool GetSpritePixelColorUnderMousePointer(SpriteRenderer spriteRenderer, out Color color) {
