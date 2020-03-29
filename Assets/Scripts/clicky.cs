@@ -35,7 +35,7 @@ public class clicky : MonoBehaviour
         mainGame = gameObject.GetComponent<MainGame>();
 
         // set color map invisible
-        colorMap.GetComponent<Image>().enabled = false;
+        //colorMap.GetComponent<Image>().enabled = false;
 
         // set scales equal
         colorMapTransform = colorMap.GetComponent<RectTransform>();
@@ -140,7 +140,7 @@ public class clicky : MonoBehaviour
             Vector2 localCursor;
             if(RectTransformUtility.ScreenPointToLocalPointInRectangle(colorMapTransform, eventData.position, eventData.pressEventCamera, out localCursor)) {
                 // click inside sprite
-                Debug.Log("Succes? localCursor: " + localCursor);
+                // Debug.Log("Succes? localCursor: " + localCursor);
 
                 Sprite sprite = img.sprite;
 
@@ -167,10 +167,59 @@ public class clicky : MonoBehaviour
                 sprite.texture.Apply();
                 */
 
+                /*
                 Debug.Log("texture.width: " + sprite.texture.width + "\ntextureRect: " + textureRect);
                 Debug.Log("maxx: " + textureRect.xMax);
                 Debug.Log("texPosX: " + texPosX + ", texPosY: " + texPosY + "\nSuccess2? color: " + color);
-                // Debug.Log("2drect: " + colorMapTransform.localScal);
+                */
+
+                // Debug.Log("color.g: " + color.g);
+                // Debug.Log("color: " + color);
+
+                // get rid of transparent and non-blue sections
+                if (color != null && color.a >= 0.999 && color.b >= 0.999 && color.r <= 0.001) {
+                    // Map to sections
+                    float temp = color.g;
+                    if(temp < 0.05) {
+                        mainGame.changeSelected(1);
+                    }
+                    else if(temp < 0.09) {
+                        mainGame.changeSelected(2);
+                    }
+                    else if (temp < 0.13) {
+                        mainGame.changeSelected(3);
+                    }
+                    else if (temp < 0.17) {
+                        mainGame.changeSelected(4);
+                    }
+                    else if (temp < 0.22) {
+                        mainGame.changeSelected(5);
+                    }
+                    else if (temp < 0.26) {
+                        mainGame.changeSelected(6);
+                    }
+                    else if (temp < 0.30) {
+                        mainGame.changeSelected(7);
+                    }
+                    else if (temp < 0.35) {
+                        mainGame.changeSelected(8);
+                    }
+                    else if (temp < 0.392) {
+                        mainGame.changeSelected(9);
+                    }
+                    else if (temp < 0.42) {
+                        mainGame.changeSelected(10);
+                    }
+                    else if (temp < 0.45) {
+                        mainGame.changeSelected(11);
+                    }
+                    else {
+                        mainGame.changeSelected(-1);
+                    }
+                }
+                else {
+                    mainGame.changeSelected(-1);
+                }
             }
         }
     }

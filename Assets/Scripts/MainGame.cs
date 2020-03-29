@@ -195,7 +195,14 @@ public class MainGame : MonoBehaviour
 		
 		currentNode = firstNode;
     }
-
+    public bool changeSelected(int val) {
+        if(val <= 0 || val > nodeList.Count) {
+            selected = -1;
+            return false;
+        }
+        selected = val - 1;
+        return true;
+    }
     // Update is called once per frame
     void Update(){
 		if(!paused){	//Checks if unpaused
