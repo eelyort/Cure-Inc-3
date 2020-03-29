@@ -34,12 +34,25 @@ public class clicky : MonoBehaviour
 
         mainGame = gameObject.GetComponent<MainGame>();
 
+        // set color map invisible
+        colorMap.GetComponent<Image>().enabled = false;
+
         // set scales equal
         colorMapTransform = colorMap.GetComponent<RectTransform>();
         RectTransform lungTransform = map.GetComponent<RectTransform>();
         colorMapTransform.anchoredPosition = lungTransform.anchoredPosition;
         colorMapTransform.rotation = lungTransform.rotation;
         colorMapTransform.localScale = lungTransform.localScale;
+
+        /*
+        Texture2D text = colorMap.GetComponent<Image>().sprite.texture;
+        for(int r = 500; r < 600; r++) {
+            for(int c = 0; c < 1000; c++) {
+                text.SetPixel(c, r, new Color(0, 0, 0));
+            }
+        }
+        text.Apply();
+        */
 
         // get raycaster
         // this.raycaster = canvas.GetComponent<GraphicRaycaster>();
@@ -134,17 +147,25 @@ public class clicky : MonoBehaviour
                 // Debug.Log("Sprite Name: " + sprite.name);
 
                 Rect textureRect = sprite.rect;
-                // float pixelsPerUnit = sprite.pixelsPerUnit;
-                float pixelsPerUnit = 1;
-                float halfRealTexWidth = sprite.texture.width * pixelsPerUnit * 0.5f; // use the real texture width here because center is based on this -- probably won't work right for atlases
-                float halfRealTexHeight = sprite.texture.height * pixelsPerUnit * 0.5f;
+                float halfRealTexWidth = sprite.texture.width * 0.5f; // use the real texture width here because center is based on this -- probably won't work right for atlases
+                float halfRealTexHeight = sprite.texture.height * 0.5f;
+
+                double xCorrection = 3840.0 / textureRect.width - 0.28;
+                double yCorrection = 2160 / textureRect.height - 0.28;
                 // Convert to pixel position, offsetting so 0,0 is in lower left instead of center
-                int texPosX = (int)(localCursor.x * colorMapTransform.localScale.x * pixelsPerUnit + halfRealTexWidth);
-                int texPosY = (int)(localCursor.y * colorMapTransform.localScale.y * pixelsPerUnit + halfRealTexHeight);
+                int texPosX = (int)(localCursor.x * colorMapTransform.localScale.x * xCorrection + halfRealTexWidth);
+                int texPosY = (int)(localCursor.y * colorMapTransform.localScale.y * yCorrection + halfRealTexHeight);
 
                 Color color = sprite.texture.GetPixel(texPosX, texPosY);
 
-                sprite.texture.SetPixel(texPosX, texPosY, new Color(255, 255, 255));
+                /*
+                Color[] test = new Color[25];
+                for(int i = 0; i < 25; i++) {
+                    test[i] = new Color(0, 0, 0);
+                }
+                sprite.texture.SetPixels(texPosX-2, texPosY-2, 5, 5, test);
+                sprite.texture.Apply();
+                */
 
                 Debug.Log("texture.width: " + sprite.texture.width + "\ntextureRect: " + textureRect);
                 Debug.Log("maxx: " + textureRect.xMax);
