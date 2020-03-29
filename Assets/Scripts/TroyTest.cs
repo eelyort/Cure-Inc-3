@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class TroyTest : MonoBehaviour
 {
-    public int FVstart = 10000;
-    public int WBstart = 100;
-    public int bodyCells = 50000;
-    public int infectedBCstart = 100;
+    public uint FVstart = 10000;
+    public uint WBstart = 100;
+    public uint bodyCells = 50000;
+    public uint infectedBCstart = 100;
 
     public double deadVirusperWhiteBlood = 5;
     public double deadWBperdeadV = 1.0/50.0;
@@ -21,7 +21,7 @@ public class TroyTest : MonoBehaviour
 
     public int breakEvenPoint = 10000;
 
-    public int numWBperTick = 5;
+    public uint numWBperTick = 5;
 
     public int numTicks = 100;
 
@@ -34,11 +34,11 @@ public class TroyTest : MonoBehaviour
         hi.adjacents.AddLast(adjacent);
 
         Debug.Log("  Time to die");
-        string format = "  {0,-2} | {1,-16} | {2,-16} | {3,-16} | {4,-16} | {5,-16}";
-        Debug.Log(string.Format(format, "i", "FV", "WB", "iWB", "uiBC", "iBC"));
+        string format = "  {0,-2} | {1,-16} | {2,-16} | {3,-16} | {4,-16} | {5,-16} | {6,-16}";
+        Debug.Log(string.Format(format, "i", "FV", "WB", "iWB", "uiBC", "iBC", "adjacent"));
 
         for (int i = 0; i < numTicks; i++) {
-            Debug.Log(string.Format(format, i, hi.freeViruses, hi.whiteBloodCount, hi.infectedWhiteBloodCells, hi.uninfectedBodyCells, hi.infectedBodyCells));
+            Debug.Log(string.Format(format, i, hi.freeViruses, hi.whiteBloodCount, hi.infectedWhiteBloodCells, hi.uninfectedBodyCells, hi.infectedBodyCells, adjacent.freeViruses));
             hi.whiteBloodCount += numWBperTick;
             hi.tick();
         }

@@ -11,10 +11,10 @@ public class MainGame : MonoBehaviour
 	
 	bool paused = false;
 	
-	int freeVirusStart; 
-	int whiteBloodStart; 
-	int bodyCells;
-	int infectBodyStart;
+	ulong freeVirusStart; 
+	uint whiteBloodStart; 
+	uint bodyCells;
+	uint infectBodyStart;
 	double deadVirusperWhiteBlood;
 	double deadWhiteBloodperDeadVirus;
 	double deadInfectedCellsperVirus;
@@ -25,12 +25,12 @@ public class MainGame : MonoBehaviour
 	double whiteBloodResistance;
 	int breakEvenPoint;
 	
-	long totalFreeViruses;
-	int totalWhiteBloodCount;
-	int totalInfectedWhiteBloodCells;
-	int totalUninfectedBodyCells;
-	int totalInfectedBodyCells;
-	int totalOrignalBodyCellCount;
+	ulong totalFreeViruses;
+	uint totalWhiteBloodCount;
+	uint totalInfectedWhiteBloodCells;
+	uint totalUninfectedBodyCells;
+	uint totalInfectedBodyCells;
+	uint totalOrignalBodyCellCount;
 
 	int difficulty = 1;
 	int enemySpawnRate = 1;
@@ -143,12 +143,12 @@ public class MainGame : MonoBehaviour
 			freeWhiteBloodCells += playerSpawnRate;
 			
 			//Temp variables for summing up node information
-			long tempFreeViruses = 0;
-			int tempWhiteBloodCount = 0;
-			int tempInfectedWhiteBloodCells = 0;
-			int tempUninfectedBodyCells = 0;
-			int tempInfectedBodyCells = 0;
-			int tempOrignalBodyCellCount = 0;
+			ulong tempFreeViruses = 0;
+			uint tempWhiteBloodCount = 0;
+			uint tempInfectedWhiteBloodCells = 0;
+			uint tempUninfectedBodyCells = 0;
+			uint tempInfectedBodyCells = 0;
+			uint tempOrignalBodyCellCount = 0;
 			
 			//Iterates through linkedlist of nodes
 			while(currentNode != null){
@@ -178,27 +178,27 @@ public class MainGame : MonoBehaviour
     }
 	
 	public long getFreeViruses(){
-		return totalFreeViruses;
+		return (long)totalFreeViruses;
 	}
 	
 	public int getWhiteBloodCount(){
-		return totalWhiteBloodCount;
+		return (int)totalWhiteBloodCount;
 	}
 	
 	public int getInfectedWhiteBloodCells(){
-		return totalInfectedWhiteBloodCells;
+		return (int)totalInfectedWhiteBloodCells;
 	}
 	
 	public int getUninfectedBodyCells(){
-		return totalUninfectedBodyCells;
+		return (int)totalUninfectedBodyCells;
 	}
 	
 	public int getInfectedBodyCells(){
-		return totalInfectedBodyCells;
+		return (int)totalInfectedBodyCells;
 	}
 	
 	public int getOrignalBodyCellCount(){
-		return totalOrignalBodyCellCount;
+		return (int)totalOrignalBodyCellCount;
 	}
 	
 	public long getTickCount(){

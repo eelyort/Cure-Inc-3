@@ -403,11 +403,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FVstart: 1000
-  WBstart: 10
+  WBstart: 30
   bodyCells: 100000
   infectedBCstart: 8000
   deadVirusperWhiteBlood: 50
-  deadWBperdeadV: 0.01
+  deadWBperdeadV: 0
   deadICperWB: 1
   infectedCellsperFV: 0.05
   FVperIC: 50
