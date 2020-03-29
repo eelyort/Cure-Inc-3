@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class Counter : MonoBehaviour
 {
     public GameObject text;
+    public GameObject temp;
     // Start is called before the first frame update
     void Start()
     {
         text.GetComponent<Text>().text = "Virus Count: 0\nWhite Blood Cell Count: 0";
-
     }
 
     // Update is called once per frame
