@@ -10,6 +10,8 @@ public class MainGame : MonoBehaviour
 	LinkedListNode<Node> currentNode;
 	
 	bool paused = false;
+
+    //Settings settings;
 	
 	ulong freeVirusStart; 
 	uint whiteBloodStart; 
@@ -41,25 +43,79 @@ public class MainGame : MonoBehaviour
 
     // which zone is currently selected, -1 is none
     int selected = -1;
-	
-	
-	// Start is called before the first frame update
-    void Start(){
-		//Create nodes
-        Node node1 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node2 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node3 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node4 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node5 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node6 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node7 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node8 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node9 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node10 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		Node node11 = new Node(freeVirusStart, whiteBloodStart, bodyCells, infectBodyStart, deadVirusperWhiteBlood, deadWhiteBloodperDeadVirus, deadInfectedCellsperVirus, infectedCellsperVirus, virusesPerInfectedCell, chanceICbursts, spreadPerVirus, whiteBloodResistance, breakEvenPoint);
-		
-		//Adds nodes to nodeList
-		nodeList.AddLast(node1);
+
+
+    // Start is called before the first frame update
+    void Start() {
+        GameSettings newbieSettings = new GameSettings {
+            // TODO
+            freeVirusStart = 1000,
+            whiteBloodStart = 20,
+            bodyCells = 60000,
+            infectBodyStart = 3000,
+            deadVirusperWhiteBlood = 1500,
+            deadWhiteBloodperDeadVirus = 0.0005,
+            deadInfectedCellsperVirus = 0.4,
+            infectedCellsperVirus = 0.055,
+            virusesPerInfectedCell = 400,
+            chanceICbursts = 0.1,
+            spreadPerVirus = 0.005,
+            whiteBloodResistance = 0.4,
+            breakEvenPoint = 15000
+        };
+        GameSettings casualSettings = new GameSettings {
+            freeVirusStart = 1000,
+            whiteBloodStart = 20,
+            bodyCells = 60000,
+            infectBodyStart = 3000,
+            deadVirusperWhiteBlood = 1500,
+            deadWhiteBloodperDeadVirus = 0.0005,
+            deadInfectedCellsperVirus = 0.4,
+            infectedCellsperVirus = 0.055,
+            virusesPerInfectedCell = 400,
+            chanceICbursts = 0.1,
+            spreadPerVirus = 0.005,
+            whiteBloodResistance = 0.4,
+            breakEvenPoint = 15000
+        };
+        GameSettings insaneSettings = new GameSettings {
+            // TODO
+            freeVirusStart = 1000,
+            whiteBloodStart = 20,
+            bodyCells = 60000,
+            infectBodyStart = 3000,
+            deadVirusperWhiteBlood = 1500,
+            deadWhiteBloodperDeadVirus = 0.0005,
+            deadInfectedCellsperVirus = 0.4,
+            infectedCellsperVirus = 0.055,
+            virusesPerInfectedCell = 400,
+            chanceICbursts = 0.1,
+            spreadPerVirus = 0.005,
+            whiteBloodResistance = 0.4,
+            breakEvenPoint = 15000
+        };
+
+
+        GameSettings[] settings = new GameSettings[3] {newbieSettings, casualSettings, insaneSettings};
+
+        int diff = GlobalStaticVariables.getDiff();
+
+
+        //Create nodes
+        Node node1 = new Node(settings[diff]);
+		Node node2 = new Node(settings[diff]);
+        Node node3 = new Node(settings[diff]);
+        Node node4 = new Node(settings[diff]);
+        Node node5 = new Node(settings[diff]);
+        Node node6 = new Node(settings[diff]);
+        Node node7 = new Node(settings[diff]);
+        Node node8 = new Node(settings[diff]);
+        Node node9 = new Node(settings[diff]);
+        Node node10 = new Node(settings[diff]);
+        Node node11 = new Node(settings[diff]);
+
+        //Adds nodes to nodeList
+        nodeList.AddLast(node1);
 		nodeList.AddLast(node2);
 		nodeList.AddLast(node3);
 		nodeList.AddLast(node4);

@@ -4,33 +4,33 @@ using UnityEngine;
 
 public class Options : MonoBehaviour
 {
-    int diff;
+    // int diff;
 
     public void Start()
     {
-        diff = 1;
+        GlobalStaticVariables.difficulty = 1;
     }
 
     public void setEasy()
     {
         Debug.Log("Set Easy!");
-        diff = 0;
+        GlobalStaticVariables.difficulty = 0;
     }
 
     public void setCasual()
     {
         Debug.Log("Set Casual!");
-        diff = 1;
+        GlobalStaticVariables.difficulty = 1;
     }
 
     public void setHard()
     {
         Debug.Log("Set Hard!");
-        diff = 2;
+        GlobalStaticVariables.difficulty = 2;
     }
 
     public int getDiff()
     {
-        return diff;
+        return GlobalStaticVariables.difficulty;
     }
 }

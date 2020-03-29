@@ -144,6 +144,8 @@ public class clicky : MonoBehaviour
 
                 Color color = sprite.texture.GetPixel(texPosX, texPosY);
 
+                sprite.texture.SetPixel(texPosX, texPosY, new Color(255, 255, 255));
+
                 Debug.Log("texture.width: " + sprite.texture.width + "\ntextureRect: " + textureRect);
                 Debug.Log("maxx: " + textureRect.xMax);
                 Debug.Log("texPosX: " + texPosX + ", texPosY: " + texPosY + "\nSuccess2? color: " + color);

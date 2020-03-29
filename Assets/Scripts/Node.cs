@@ -60,6 +60,31 @@ public class Node {
 
         hidden = true;
     }
+    public Node(GameSettings set) {
+        updateSettings(set);
+
+        hidden = true;
+    }
+    public void updateSettings(GameSettings set) {
+        freeViruses = set.freeVirusStart;
+        whiteBloodCount = set.whiteBloodStart;
+        orignalBodyCellCount = set.bodyCells;
+        infectedBodyCells = set.infectBodyStart;
+        uninfectedBodyCells = this.orignalBodyCellCount - this.infectedBodyCells;
+
+        // settings for difficulty level
+        dedVperWB = set.deadVirusperWhiteBlood;
+        dedWBperdedV = set.deadWhiteBloodperDeadVirus;
+        dedICperWB = set.deadInfectedCellsperVirus;
+        infCperFV = set.infectedCellsperVirus;
+        FVperIC = set.virusesPerInfectedCell;
+        this.chanceICbursts = set.chanceICbursts;
+        spreadPerFV = set.spreadPerVirus;
+        // resistance
+        whiteResistanceToInfection = set.whiteBloodResistance;
+        // breakeven point
+        this.breakEvenPoint = set.breakEvenPoint;
+    }
 
     void ranJiggle(out double jiggle) {
         jiggle = (Random.Range(0.0f, 1.9f) + 0.05) * speedThrottler;
