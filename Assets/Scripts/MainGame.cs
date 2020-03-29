@@ -216,6 +216,10 @@ public class MainGame : MonoBehaviour
 		return (a / getTotalViruses()) * 100000;
 	}
 	
+    public double getHealth() {
+        // returns a percentage of health
+        return (double)getUninfectedBodyCells() / (double)getOrignalBodyCellCount();
+    }
 
 	public int getFreeWBC()
 	{
