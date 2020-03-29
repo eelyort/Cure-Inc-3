@@ -7,6 +7,6 @@ public class DELETELATER : MonoBehaviour
     // Start is called before the first frame update
     public void EndScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(2);
     }
 }
