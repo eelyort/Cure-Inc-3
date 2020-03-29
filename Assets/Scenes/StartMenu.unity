@@ -796,6 +796,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0, b: 0, a: 0}
   colorMap: {fileID: 0}
+  map: {fileID: 0}
+  canvas: {fileID: 0}
 --- !u!114 &491375541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1207,6 +1209,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0, b: 0, a: 0}
   colorMap: {fileID: 0}
+  map: {fileID: 0}
+  canvas: {fileID: 0}
 --- !u!212 &689717091
 SpriteRenderer:
   m_ObjectHideFlags: 0
