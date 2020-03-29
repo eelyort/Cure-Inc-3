@@ -198,7 +198,12 @@ public class MainGame : MonoBehaviour
 	public int getOrignalBodyCellCount(){
 		return totalOrignalBodyCellCount;
 	}
-	
+
+	public int getFreeWBC()
+	{
+		return freeWhiteBloodCells;
+	}
+
 	public void pauseGame(){
 		paused = true;
 	}
