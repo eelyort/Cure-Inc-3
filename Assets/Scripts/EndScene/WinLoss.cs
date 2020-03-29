@@ -21,10 +21,4 @@ public class WinLoss : MonoBehaviour
             text.GetComponent<Text>().text = "GAME OVER" + closer;
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
