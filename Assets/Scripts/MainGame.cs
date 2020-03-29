@@ -200,6 +200,10 @@ public class MainGame : MonoBehaviour
 	public int getOrignalBodyCellCount(){
 		return (int)totalOrignalBodyCellCount;
 	}
+
+    public int getTotalViruses() {
+        return (int)getFreeViruses() + getInfectedWhiteBloodCells() + getInfectedBodyCells();
+    }
 	
 	public long getTickCount(){
 		return tickCount;
@@ -208,7 +212,7 @@ public class MainGame : MonoBehaviour
 	public long getScore()
 	{
 		long a = getTickCount();
-		return a / 10;
+		return (a / getTotalViruses()) * 100000;
 	}
 	
 
