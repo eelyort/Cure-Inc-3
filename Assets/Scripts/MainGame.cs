@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainGame : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class MainGame : MonoBehaviour
 	LinkedList<Node> nodeList = new LinkedList<Node>();
 	LinkedListNode<Node> firstNode;
 	LinkedListNode<Node> currentNode;
+	
+	Text scoreText = GameObject.Find("Canvas/scoreText").GetComponent<Text>();
 	
 	bool paused = false;
 	
@@ -175,6 +178,7 @@ public class MainGame : MonoBehaviour
 			totalInfectedBodyCells = tempInfectedBodyCells;
 			totalOrignalBodyCellCount = tempOrignalBodyCellCount;
 			
+			scoreText.text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
 		}
     }
 	
