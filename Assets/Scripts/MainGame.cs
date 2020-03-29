@@ -11,7 +11,7 @@ public class MainGame : MonoBehaviour
 	
 	bool paused = false;
 	
-	int freeVirusStart; 
+	long freeVirusStart; 
 	int whiteBloodStart; 
 	int bodyCells;
 	int infectBodyStart;
