@@ -38,8 +38,8 @@ public class TroyTest : MonoBehaviour
         Debug.Log(string.Format(format, "i", "FV", "WB", "iWB", "uiBC", "iBC", "adjacent"));
 
         for (int i = 0; i < numTicks; i++) {
-            Debug.Log(string.Format(format, i, hi.freeViruses, hi.whiteBloodCount, hi.infectedWhiteBloodCells, hi.uninfectedBodyCells, hi.infectedBodyCells, adjacent.freeViruses));
-            hi.whiteBloodCount += numWBperTick;
+            Debug.Log(string.Format(format, i, hi.getFreeViruses(), hi.getWhiteBloodCount(), hi.getInfectedWhiteBloodCells(), hi.getUninfectedBodyCells(), hi.getInfectedBodyCells(), adjacent.getFreeViruses()));
+            hi.changeVirusCount((int)numWBperTick);
             hi.tick();
         }
     }

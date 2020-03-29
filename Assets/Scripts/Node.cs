@@ -8,13 +8,13 @@ public class Node {
 
     // ints
     // virus's floating freely
-    public ulong freeViruses;
-    public uint whiteBloodCount;
-    public uint infectedWhiteBloodCells;
+    ulong freeViruses;
+    uint whiteBloodCount;
+    uint infectedWhiteBloodCells;
     // safe body cells
-    public uint uninfectedBodyCells;
-    public uint infectedBodyCells;
-    public uint orignalBodyCellCount;
+    uint uninfectedBodyCells;
+    uint infectedBodyCells;
+    uint orignalBodyCellCount;
 
     // game settings, should set in main cuz difficultly levels
     // V: virus, WB: white blood cell, BC: body cell, ded: dead/killed, inf: infected, C: cells, FV: free virus
@@ -35,6 +35,9 @@ public class Node {
     // white blood cells r more likely to get found cuz they're moving around
     const double whiteLikelyHoodMod = 50;
 
+    // whether the player knows about the infection here
+    public bool hidden;
+
     public Node(ulong freeVirusStart, uint whiteBloodStart, uint bodyCells, uint infectBodyStart, double deadVirusperWhiteBlood, double deadWhiteBloodperDeadVirus, double deadInfectedCellsperVirus, double infectedCellsperVirus, double virusesPerInfectedCell, double chanceICbursts, double spreadPerVirus, double whiteBloodResistance, int breakEvenPoint) {
         freeViruses = freeVirusStart;
         whiteBloodCount = whiteBloodStart;
@@ -54,6 +57,8 @@ public class Node {
         whiteResistanceToInfection = whiteBloodResistance;
         // breakeven point
         this.breakEvenPoint = breakEvenPoint;
+
+        hidden = true;
     }
 
     void ranJiggle(out double jiggle) {
@@ -70,7 +75,18 @@ public class Node {
         // old code
         // return tickOne();
     }
+    public void changeVirusCount(int x) {
+        freeViruses = (ulong)((long)freeViruses + x);
+    }
     private int tickTwo() {
+        // update hidden
+        if (hidden) {
+            double percentRand = Random.Range(0.0f, 1.0f);
+            if (percentRand < ((long)freeViruses / breakEvenPoint)) {
+                hidden = false;
+            }
+        }
+
         // retry with all the variables remaing constant until end when results r tallied
         // tallies of how much to change each value at end of this function
         long freeVirusesTally = 0;
@@ -158,7 +174,7 @@ public class Node {
                 LinkedListNode<Node> curr = adjacents.First;
                 for (int i = 0; i < adjacents.Count; i++) {
                     if (toInfect[i]) {
-                        curr.Value.freeViruses += (ulong)(numMigrators / numSpread);
+                        curr.Value.changeVirusCount((int)(numMigrators / numSpread));
                     }
                     curr = curr.Next;
                 }
@@ -319,5 +335,37 @@ public class Node {
             return (int)whiteBloodCount;
         }
         return 0;
+    }
+
+    // get functions
+    public long getFreeViruses() {
+        if (hidden) {
+            return 0;
+        }
+        return (long)freeViruses;
+    }
+    public int getWhiteBloodCount() {
+        return (int)whiteBloodCount;
+    }
+    public int getInfectedWhiteBloodCells() {
+        if (hidden) {
+            return 0;
+        }
+        return (int)infectedWhiteBloodCells;
+    }
+    public int getUninfectedBodyCells() {
+        if (hidden) {
+            return (int)orignalBodyCellCount;
+        }
+        return (int)uninfectedBodyCells;
+    }
+    public int getInfectedBodyCells() {
+        if (hidden) {
+            return 0;
+        }
+        return (int)infectedBodyCells;
+    }
+    public int getOriginalCellCount() {
+        return (int)orignalBodyCellCount;
     }
 }
