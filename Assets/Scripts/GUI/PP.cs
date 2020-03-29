@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PP : MonoBehaviour
 {
     public GameObject text;
+    public GameObject temp;
     bool play;
     // Start is called before the first frame update
     void Start()
@@ -26,12 +27,14 @@ public class PP : MonoBehaviour
             play = false;
             text.GetComponent<Text>().text = "Play";
             Debug.Log("PAUSED");
+            temp.GetComponent<MainGame>().pauseGame();
         }
         else
         {
             play = true;
             text.GetComponent<Text>().text = "Pause";
             Debug.Log("PLAYING");
+            temp.GetComponent<MainGame>().unpauseGame();
         }
     }
 }

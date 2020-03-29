@@ -205,6 +205,12 @@ public class MainGame : MonoBehaviour
 		return tickCount;
 	}
 	
+
+	public int getFreeWBC()
+	{
+		return freeWhiteBloodCells;
+	}
+
 	public void pauseGame(){
 		paused = true;
 	}
