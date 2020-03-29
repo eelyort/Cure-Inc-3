@@ -24,6 +24,13 @@ public class MainGame : MonoBehaviour
 	double spreadPerVirus;
 	double whiteBloodResistance;
 	int breakEvenPoint;
+	
+	long totalFreeViruses = 0;
+	int totalWhiteBloodCount = 0;
+	int totalInfectedWhiteBloodCells = 0;
+	int totalUninfectedBodyCells = 0;
+	int totalInfectedBodyCells = 0;
+	int totalOrignalBodyCellCount = 0;
 
 	int difficulty = 1;
 	int enemySpawnRate = 1;
@@ -127,6 +134,71 @@ public class MainGame : MonoBehaviour
 		
 		currentNode = firstNode;
     }
+
+    // Update is called once per frame
+    void Update(){
+		if(!paused){	//Checks if unpaused
+			freeWhiteBloodCells += playerSpawnRate;
+			
+			//Temp variables for summing up node information
+			long tempFreeViruses = 0;
+			int tempWhiteBloodCount = 0;
+			int tempInfectedWhiteBloodCells = 0;
+			int tempUninfectedBodyCells = 0;
+			int tempInfectedBodyCells = 0;
+			int tempOrignalBodyCellCount = 0;
+			
+			//Iterates through linkedlist of nodes
+			while(currentNode != null){
+				currentNode.Value.tick();
+				
+				//Sums up information about each nodes
+				tempFreeViruses += currentNode.Value.freeViruses;
+				tempWhiteBloodCount += currentNode.Value.whiteBloodCount;
+				tempInfectedWhiteBloodCells += currentNode.Value.uninfectedBodyCells;
+				tempUninfectedBodyCells += currentNode.Value.uninfectedBodyCells;
+				tempInfectedBodyCells += currentNode.Value.infectedBodyCells;
+				tempOrignalBodyCellCount += currentNode.Value.orignalBodyCellCount;
+				
+				//Changes to next node
+				currentNode = currentNode.Next;
+				
+			}
+		
+			totalFreeViruses = tempFreeViruses;
+			totalWhiteBloodCount = tempWhiteBloodCount;
+			totalInfectedWhiteBloodCells = tempInfectedWhiteBloodCells;
+			totalUninfectedBodyCells = tempUninfectedBodyCells;
+			totalInfectedBodyCells = tempInfectedBodyCells;
+			totalOrignalBodyCellCount = tempOrignalBodyCellCount;
+			
+		}
+		
+    }
+	
+	public long getFreeViruses(){
+		return totalFreeViruses;
+	}
+	
+	public int getWhiteBloodCount(){
+		return totalWhiteBloodCount;
+	}
+	
+	public int getInfectedWhiteBloodCells(){
+		return totalInfectedWhiteBloodCells;
+	}
+	
+	public int getUninfectedBodyCells(){
+		return totalUninfectedBodyCells;
+	}
+	
+	public int getInfectedBodyCells(){
+		return totalInfectedBodyCells;
+	}
+	
+	public int getOrignalBodyCellCount(){
+		return totalOrignalBodyCellCount;
+	}
 	
 	public void pauseGame(){
 		paused = true;
@@ -135,16 +207,5 @@ public class MainGame : MonoBehaviour
 	public void unpauseGame(){
 		paused = false;
 	}
-
-    // Update is called once per frame
-    void Update(){
-		if(!paused){
-			freeWhiteBloodCells += playerSpawnRate;
-			while(currentNode != null){
-				currentNode.Value.tick();
-				currentNode = currentNode.Next;
-			}
-		}
-		
-    }
+	
 }
