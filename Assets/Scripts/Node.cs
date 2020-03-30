@@ -64,6 +64,11 @@ public class Node {
         updateSettings(set, addStartViruses, true);
 
         hidden = true;
+
+        /*
+        string format = "Node(settings, {0}) called:\n  FV={1} | WB={2} | OBC={3} | iBC={4} | uiBC={5} | hidden={6}";
+        Debug.Log(string.Format(format, addStartViruses, freeViruses, whiteBloodCount, orignalBodyCellCount, infectedBodyCells, uninfectedBodyCells, hidden));
+        */
     }
     // deletes all viruses
     public void clearViruses() {
@@ -79,14 +84,16 @@ public class Node {
     public void updateSettings(GameSettings set, bool addStartViruses, bool starting) {
         // should only set all these values once
         if (starting) {
+            freeViruses = 0;
+            infectedBodyCells = 0;
             // add startViruses checks whether to start the cell as infected because not all nodes start affected
             if (addStartViruses) {
                 freeViruses = set.freeVirusStart;
                 infectedBodyCells = set.infectBodyStart;
             }
             whiteBloodCount = set.whiteBloodStart;
-            uninfectedBodyCells = this.orignalBodyCellCount - this.infectedBodyCells;
             orignalBodyCellCount = set.bodyCells;
+            uninfectedBodyCells = this.orignalBodyCellCount - this.infectedBodyCells;
         }
 
         // settings for difficulty level
@@ -219,10 +226,15 @@ public class Node {
                 for (int i = 0; i < adjacents.Count; i++) {
                     if (toInfect[i]) {
                         curr.Value.changeVirusCount((int)(numMigrators / numSpread));
+                        freeVirusesTally -= (int)(numMigrators / numSpread);
                     }
                     curr = curr.Next;
                 }
-                freeVirusesTally -= (numMigrators / numSpread) * (numMigrators / (numMigrators / numSpread));
+                /*
+                Debug.Log("numSpread: " + numSpread);
+                Debug.Log("numMigrators: " + numMigrators);
+                freeVirusesTally -= (numMigrators / (double)numSpread) * (numMigrators / (numMigrators / (double)numSpread));
+                */
             }
         }
 

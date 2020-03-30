@@ -1027,8 +1027,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 138.9, y: -60.3}
-  m_SizeDelta: {x: 437.8, y: 150.6}
+  m_AnchoredPosition: {x: 113.3, y: -92.75}
+  m_SizeDelta: {x: 489, y: 215.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1575056780
 MonoBehaviour:
@@ -1061,7 +1061,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: PLACEHOLDER DELETE ME
+  m_Text: 'Counter PLACEHOLDER DELETE ME
+
+'
 --- !u!222 &1575056781
 CanvasRenderer:
   m_ObjectHideFlags: 0

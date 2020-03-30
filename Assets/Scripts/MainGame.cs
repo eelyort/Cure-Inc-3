@@ -49,7 +49,7 @@ public class MainGame : MonoBehaviour
 	long tickCount = 0;
 
     // x ticks per second
-    int ticksPerSecond = 10;
+    int ticksPerSecond = 2;
     float timeLast;
 
     // which zone is currently selected, -1 is none
@@ -85,7 +85,9 @@ public class MainGame : MonoBehaviour
             chanceICbursts = 0.1,
             spreadPerVirus = 0.005,
             whiteBloodResistance = 0.4,
-            breakEvenPoint = 15000
+            breakEvenPoint = 15000,
+
+            startInfectedNodes = 2
         };
         GameSettings casualSettings = new GameSettings {
             freeVirusStart = 1000,
@@ -100,7 +102,9 @@ public class MainGame : MonoBehaviour
             chanceICbursts = 0.1,
             spreadPerVirus = 0.005,
             whiteBloodResistance = 0.4,
-            breakEvenPoint = 15000
+            breakEvenPoint = 15000,
+
+            startInfectedNodes = 2
         };
         GameSettings insaneSettings = new GameSettings {
             // TODO
@@ -116,7 +120,9 @@ public class MainGame : MonoBehaviour
             chanceICbursts = 0.1,
             spreadPerVirus = 0.005,
             whiteBloodResistance = 0.4,
-            breakEvenPoint = 15000
+            breakEvenPoint = 15000,
+
+            startInfectedNodes = 2
         };
 
 
@@ -129,10 +135,20 @@ public class MainGame : MonoBehaviour
         HashSet<int> startInfected = new HashSet<int>();
         while(startInfected.Count < settings[difficulty].startInfectedNodes) {
             int rand = (int)Mathf.Min(10.1f, Random.Range(0.0f, (float)nodeList.Length));
+            Debug.Log(rand);
             if (!startInfected.Contains(rand)) {
                 startInfected.Add(rand);
             }
         }
+
+        // DEBUG --------------------------------
+        /*
+        Debug.Log("startInfected: " + startInfected);
+        foreach(int a in startInfected) {
+            Debug.Log("a: " + a);
+        }
+        */
+        // --------------------------------------
 
         //Create nodes
         for(int i = 0; i < 11; i++) {
@@ -231,10 +247,15 @@ public class MainGame : MonoBehaviour
     }
     // function which runs the game ticks, here for more control over tick rate
     void tick() {
+        // Debugging ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        /*
+        Debug.Log("tick: " + tickCount);
+        string format = "  {0,-2} | {1,-16} | {2,-16} | {3,-16} | {4,-16} | {5,-16} | {6,-16}";
+        */
+        // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         freeWhiteBloodCells += playerSpawnRate;
         tickCount++;
-
-        Debug.Log("tick: " + tickCount);
 
         //Temp variables for summing up node information
         long tempFreeViruses = 0;
@@ -277,7 +298,7 @@ public class MainGame : MonoBehaviour
             // moved code to tick() for control over ticks per sec
             // control tick rate
             float deltaTime = Time.time - timeLast;
-            float secondsPerTick = 1 / ticksPerSecond;
+            float secondsPerTick = 1 / (float)ticksPerSecond;
             if (deltaTime > secondsPerTick) {
                 timeLast = timeLast + deltaTime;
                 tick();
@@ -325,7 +346,7 @@ public class MainGame : MonoBehaviour
             return 0;
         }
 		long a = getTickCount();
-		return (a / getTotalViruses()) * getOrignalBodyCellCount();
+		return (long)(((double)a / getTotalViruses()) * getOrignalBodyCellCount());
 	}
 	
     public double getHealth() {
