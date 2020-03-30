@@ -206,7 +206,7 @@ public class Node {
         // virus spread to adjacent nodes
         ranJiggle(out jiggle);
         int numMigrators = (int)(freeViruses * spreadPerFV * jiggle);
-        if (numMigrators > 0 && (freeViruses > (ulong)breakEvenPoint || Random.Range(0.0f, 1.0f) < 0.01)) {
+        if (numMigrators > 0 && (freeViruses > (ulong)breakEvenPoint || Random.Range(0.0f, 1.0f) < 0.001)) {
             // which adjacent nodes to infect
             bool[] toInfect = new bool[adjacents.Count];
             int numSpread = 0;

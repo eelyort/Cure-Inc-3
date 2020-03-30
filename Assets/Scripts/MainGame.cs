@@ -121,7 +121,7 @@ public class MainGame : MonoBehaviour
             infectedCellsperVirus = 0.055,
             virusesPerInfectedCell = 400,
             chanceICbursts = 0.1,
-            spreadPerVirus = 0.005,
+            spreadPerVirus = 0.002,
             whiteBloodResistance = 0.4,
             breakEvenPoint = 15000,
 
@@ -141,7 +141,7 @@ public class MainGame : MonoBehaviour
             infectedCellsperVirus = 0.055,
             virusesPerInfectedCell = 400,
             chanceICbursts = 0.1,
-            spreadPerVirus = 0.005,
+            spreadPerVirus = 0.002,
             whiteBloodResistance = 0.4,
             breakEvenPoint = 15000,
 
