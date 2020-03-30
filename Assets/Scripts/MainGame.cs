@@ -49,7 +49,7 @@ public class MainGame : MonoBehaviour
 	long tickCount = 0;
 
     // x ticks per second
-    int ticksPerSecond = 2;
+    int ticksPerSecond = 4;
     float timeLast;
 
     // which zone is currently selected, -1 is none
@@ -300,7 +300,7 @@ public class MainGame : MonoBehaviour
             float deltaTime = Time.time - timeLast;
             float secondsPerTick = 1 / (float)ticksPerSecond;
             if (deltaTime > secondsPerTick) {
-                timeLast = timeLast + deltaTime;
+                timeLast = timeLast + secondsPerTick;
                 tick();
             }
 		}
