@@ -127,7 +127,7 @@ public class MainGame : MonoBehaviour
 
             startInfectedNodes = 2,
 
-            playerSpawnRate = 10
+            playerSpawnRate = 15
         };
         GameSettings insaneSettings = new GameSettings {
             // TODO
