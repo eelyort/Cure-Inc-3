@@ -370,7 +370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &168660361
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1320,14 +1320,15 @@ MonoBehaviour:
 
 
     Created
-    through Unity!
+    in under 36 hours through the power of quarantine
 
 
-    "Howdy!" from 4 Texas A&M students
+    "Howdy!" from 4 Texas
+    A&M students
 
 
-    "We''re broke and
-    would appreciate any love!" possibly also from the same 4 students'
+    "We''re broke and would appreciate any love!" possibly also
+    from the same 4 students'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1397,10 +1398,10 @@ MonoBehaviour:
   m_margin: {x: 5.774672, y: 0, z: -387.404, w: -137.8995}
   m_textInfo:
     textComponent: {fileID: 704903232}
-    characterCount: 202
+    characterCount: 237
     spriteCount: 0
-    spaceCount: 34
-    wordCount: 33
+    spaceCount: 41
+    wordCount: 40
     linkCount: 0
     lineCount: 8
     pageCount: 1
@@ -1444,7 +1445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &712531973
 RectTransform:
   m_ObjectHideFlags: 0
