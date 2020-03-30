@@ -16,6 +16,8 @@ public class MainGame : MonoBehaviour
     // set in Start() assuming above is filled
 	GameObject scoreText;
     GameObject freeWhiteBloodCellText;
+    GameObject sectionText;
+    GameObject infectedSectionsText;
 	
 	bool paused = false;
 
@@ -50,17 +52,22 @@ public class MainGame : MonoBehaviour
 	long tickCount = 0;
 
     // x ticks per second
-    int ticksPerSecond = 4;
+    double ticksPerSecond = 0.5;
     float timeLast;
 
     // which zone is currently selected, -1 is none
     int selected = -1;
+
+    // infected sections
+    HashSet<int> infectedSects = new HashSet<int>();
 
 
     // Start is called before the first frame update
     void Start() {
         // speed control stuff, Time.time is in seconds
         timeLast = Time.time;
+
+        freeWhiteBloodCells = 10;
 
         // get all the texts and whatnot needed
         // search through all children of canvas
@@ -72,6 +79,14 @@ public class MainGame : MonoBehaviour
             else if(curr.name == "Free WBC Count Text") {
                 freeWhiteBloodCellText = curr;
             }
+            else if (curr.name == "Section Text") {
+                sectionText = curr;
+                Debug.Log("sectionText set to: " + sectionText);
+            }
+            else if (curr.name == "InfectedSections") {
+                infectedSectionsText = curr;
+            }
+            Debug.Log("searching: " + curr.name);
             // else if... for other needed values
         }
 
@@ -91,7 +106,9 @@ public class MainGame : MonoBehaviour
             whiteBloodResistance = 0.4,
             breakEvenPoint = 15000,
 
-            startInfectedNodes = 2
+            startInfectedNodes = 2,
+
+            playerSpawnRate = 10
         };
         GameSettings casualSettings = new GameSettings {
             freeVirusStart = 1000,
@@ -108,7 +125,9 @@ public class MainGame : MonoBehaviour
             whiteBloodResistance = 0.4,
             breakEvenPoint = 15000,
 
-            startInfectedNodes = 2
+            startInfectedNodes = 2,
+
+            playerSpawnRate = 10
         };
         GameSettings insaneSettings = new GameSettings {
             // TODO
@@ -126,7 +145,9 @@ public class MainGame : MonoBehaviour
             whiteBloodResistance = 0.4,
             breakEvenPoint = 15000,
 
-            startInfectedNodes = 2
+            startInfectedNodes = 2,
+
+            playerSpawnRate = 10
         };
 
 
@@ -139,7 +160,7 @@ public class MainGame : MonoBehaviour
         HashSet<int> startInfected = new HashSet<int>();
         while(startInfected.Count < settings[difficulty].startInfectedNodes) {
             int rand = (int)Mathf.Min(10.1f, Random.Range(0.0f, (float)nodeList.Length));
-            Debug.Log(rand);
+            // Debug.Log(rand);
             if (!startInfected.Contains(rand)) {
                 startInfected.Add(rand);
             }
@@ -249,6 +270,11 @@ public class MainGame : MonoBehaviour
         selected = val - 1;
         return true;
     }
+    void allocate(int sect, float percent) {
+        int allocated = Mathf.Min(freeWhiteBloodCells, Mathf.CeilToInt(freeWhiteBloodCells * percent));
+        nodeList[sect].changeWhiteBloodCount(allocated);
+        freeWhiteBloodCells -= allocated;
+    }
     // function which runs the game ticks, here for more control over tick rate
     void tick() {
         // Debugging ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -285,6 +311,16 @@ public class MainGame : MonoBehaviour
             tempUninfectedBodyCells += nodeList[i].getUninfectedBodyCells();
             tempInfectedBodyCells += nodeList[i].getInfectedBodyCells();
             tempOrignalBodyCellCount += nodeList[i].getOriginalCellCount();
+
+            int tempNumVir = (int)nodeList[i].getFreeViruses() + nodeList[i].getInfectedWhiteBloodCells() + nodeList[i].getInfectedBodyCells();
+            if(tempNumVir == 0) {
+                if (infectedSects.Contains(i)) {
+                    infectedSects.Remove(i);
+                }
+            }
+            else {
+                infectedSects.Add(i);
+            }
         }
 
         totalFreeViruses = tempFreeViruses;
@@ -294,15 +330,54 @@ public class MainGame : MonoBehaviour
         totalInfectedBodyCells = tempInfectedBodyCells;
         totalOrignalBodyCellCount = tempOrignalBodyCellCount;
 
+        /*
         scoreText.GetComponent<Text>().text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
 
         
         freeWhiteBloodCellText.GetComponent<Text>().text = ("Free White Blood Cells: " + freeWhiteBloodCells);
         freeWhiteBloodCellText.GetComponent<Text>().text = ("Reeee");
-        
+        */
     }
     // Update is called once per frame
     void Update(){
+        // Debug.Log("sectionText: " + sectionText);
+        // update text fields
+        sectionText.GetComponent<Text>().text = "Section Selected: " + ((selected != -1) ? ("" + selected) : "None") + 
+            "\nFree Viruses: " + ((selected != -1) ? ("" + nodeList[selected].getFreeViruses()) : "N/A") +
+            "\nWhite Blood Cells: " + ((selected != -1) ? ("" + nodeList[selected].getWhiteBloodCount()) : "N/A") +
+            "\nInfected White Blood Cells: " + ((selected != -1) ? ("" + nodeList[selected].getInfectedWhiteBloodCells()) : "N/A") +
+            "\nInfected Body Cells: " + ((selected != -1) ? ("" + nodeList[selected].getInfectedBodyCells()) : "N/A");
+
+        string temp = "Infected Sections\n";
+        foreach(int a in infectedSects) {
+            temp += a + ", ";
+        }
+        infectedSectionsText.GetComponent<Text>().text = temp;
+
+        // key input
+        if (selected != -1) {
+            /*
+            if (Input.GetButtonDown("q")) {
+                allocate(selected, .25f);
+            }
+            if (Input.GetButtonDown("w")) {
+                allocate(selected, .50f);
+            }
+            if (Input.GetButtonDown("e")) {
+                allocate(selected, .75f);
+            }
+            if (Input.GetButtonDown("r")) {
+                allocate(selected, 1f);
+            }
+            */
+            if (Input.GetMouseButton(2)) {
+                allocate(selected, 0.25f);
+            }
+            if (Input.GetMouseButton(1)) {
+                allocate(selected, 0.25f);
+            }
+        }
+
 		if(!paused){	//Checks if unpaused
             // moved code to tick() for control over ticks per sec
             // control tick rate

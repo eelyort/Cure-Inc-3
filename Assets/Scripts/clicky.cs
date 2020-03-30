@@ -35,7 +35,7 @@ public class clicky : MonoBehaviour
         mainGame = gameObject.GetComponent<MainGame>();
 
         // set color map invisible
-        //colorMap.GetComponent<Image>().enabled = false;
+        // colorMap.GetComponent<Image>().enabled = false;
 
         // set scales equal
         colorMapTransform = colorMap.GetComponent<RectTransform>();

@@ -115,7 +115,9 @@ public class Node {
         // jiggle = speedThrottler;
         // Debug.Log("jiggle: " + jiggle/speedThrottler);
     }
-
+    public double getHealth() {
+        return (double)uninfectedBodyCells/orignalBodyCellCount;
+    }
     // processes on tick
     public int tick(out bool unhidden) {
         // new code
@@ -400,6 +402,9 @@ public class Node {
     }
     public int getWhiteBloodCount() {
         return (int)whiteBloodCount;
+    }
+    public void changeWhiteBloodCount(int val) {
+        whiteBloodCount = (uint)Mathf.Max(0, (int)whiteBloodCount + val);
     }
     public int getInfectedWhiteBloodCells() {
         if (hidden) {

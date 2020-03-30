@@ -19,6 +19,7 @@ public class Counter : MonoBehaviour
     {
         long totalViral = temp.GetComponent<MainGame>().getFreeViruses() + temp.GetComponent<MainGame>().getInfectedWhiteBloodCells() + temp.GetComponent<MainGame>().getInfectedBodyCells();
         text.GetComponent<Text>().text = "Virus Count: " + totalViral + "\nWhite Blood Cell Count: " + temp.GetComponent<MainGame>().getWhiteBloodCount() + 
-            "\nUninfected Body Cells: " + temp.GetComponent<MainGame>().getUninfectedBodyCells() + "\nHealth: " + (temp.GetComponent<MainGame>().getHealth() * 100) + "%";
+            "\nUninfected Body Cells: " + temp.GetComponent<MainGame>().getUninfectedBodyCells() + "\nHealth: " + (temp.GetComponent<MainGame>().getHealth() * 100) + "%" +
+            "\n\nFree White Blood Cells: " + temp.GetComponent<MainGame>().getFreeWBC();
     }
 }
