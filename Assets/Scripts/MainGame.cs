@@ -5,12 +5,16 @@ using UnityEngine.UI;
 
 public class MainGame : MonoBehaviour
 {
-	//Node variables
-	LinkedList<Node> nodeList = new LinkedList<Node>();
-	LinkedListNode<Node> firstNode;
-	LinkedListNode<Node> currentNode;
-	
-	Text scoreText = GameObject.Find("Canvas/scoreText").GetComponent<Text>();
+    //Node variables
+    // LinkedList<Node> nodeList = new LinkedList<Node>();
+    Node[] nodeList = new Node[11];
+	// LinkedListNode<Node> firstNode;
+	// LinkedListNode<Node> currentNode;
+
+    // set in editor so can find everything u need
+    public GameObject canvas;
+    // set in Start() assuming above is filled
+	Text scoreText;
 	
 	bool paused = false;
 
@@ -38,11 +42,15 @@ public class MainGame : MonoBehaviour
 	int totalOrignalBodyCellCount;
 
 	int difficulty = 1;
-	int enemySpawnRate = 1;
-	int playerSpawnRate = 1;
+	// int enemySpawnRate = 1;
+	int playerSpawnRate;
 	
 	int freeWhiteBloodCells = 0;
 	long tickCount = 0;
+
+    // x ticks per second
+    int ticksPerSecond = 10;
+    float timeLast;
 
     // which zone is currently selected, -1 is none
     int selected = -1;
@@ -50,6 +58,19 @@ public class MainGame : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        // speed control stuff, Time.time is in seconds
+        timeLast = Time.time;
+
+        // get all the texts and whatnot needed
+        // search through all children of canvas
+        for (int i = 0; i < canvas.transform.childCount; i++) {
+            GameObject curr = canvas.transform.GetChild(i).gameObject;
+            if (curr.name == "TRText") {
+                scoreText = curr.GetComponent<Text>();
+            }
+            // else if... for other needed values
+        }
+
         GameSettings newbieSettings = new GameSettings {
             // TODO
             freeVirusStart = 1000,
@@ -101,10 +122,24 @@ public class MainGame : MonoBehaviour
 
         GameSettings[] settings = new GameSettings[3] {newbieSettings, casualSettings, insaneSettings};
 
-        int diff = GlobalStaticVariables.getDiff();
+        difficulty = GlobalStaticVariables.getDiff();
+        playerSpawnRate = settings[difficulty].playerSpawnRate;
 
+        // randomly generate which nodes start affected
+        HashSet<int> startInfected = new HashSet<int>();
+        while(startInfected.Count < settings[difficulty].startInfectedNodes) {
+            int rand = (int)Mathf.Min(10.1f, Random.Range(0.0f, (float)nodeList.Length));
+            if (!startInfected.Contains(rand)) {
+                startInfected.Add(rand);
+            }
+        }
 
         //Create nodes
+        for(int i = 0; i < 11; i++) {
+            Node temp = new Node(settings[difficulty], startInfected.Contains(i));
+            nodeList[i] = temp;
+        }
+        /*
         Node node1 = new Node(settings[diff]);
 		Node node2 = new Node(settings[diff]);
         Node node3 = new Node(settings[diff]);
@@ -129,123 +164,129 @@ public class MainGame : MonoBehaviour
 		nodeList.AddLast(node9);
 		nodeList.AddLast(node10);
 		nodeList.AddLast(node11);
+        
 		
-		firstNode = nodeList.First;
-		currentNode = firstNode;
+		// firstNode = nodeList.First;
+		LinkedListNode<Node> currentNode = nodeList.First;
+        */
 		
 		//Add adjacent nodes for node1
-		currentNode.Value.adjacents.AddLast(node2);
-		currentNode.Value.adjacents.AddLast(node3);
-		currentNode = currentNode.Next;
+		nodeList[0].adjacents.AddLast(nodeList[1]);
+		nodeList[0].adjacents.AddLast(nodeList[2]);
 		
 		//Add adjacent nodes for node2
-		currentNode.Value.adjacents.AddLast(node1);
-		currentNode.Value.adjacents.AddLast(node3);
-		currentNode = currentNode.Next;
+		nodeList[1].adjacents.AddLast(nodeList[0]);
+		nodeList[1].adjacents.AddLast(nodeList[2]);
 		
 		//Add adjacent nodes for node3
-		currentNode.Value.adjacents.AddLast(node1);
-		currentNode.Value.adjacents.AddLast(node2);
-		currentNode.Value.adjacents.AddLast(node4);
-		currentNode = currentNode.Next;
+		nodeList[2].adjacents.AddLast(nodeList[0]);
+		nodeList[2].adjacents.AddLast(nodeList[1]);
+		nodeList[2].adjacents.AddLast(nodeList[3]);
 		
 		//Add adjacent nodes for node4
-		currentNode.Value.adjacents.AddLast(node3);
-		currentNode.Value.adjacents.AddLast(node5);
-		currentNode.Value.adjacents.AddLast(node6);
-		currentNode = currentNode.Next;
+		nodeList[3].adjacents.AddLast(nodeList[2]);
+		nodeList[3].adjacents.AddLast(nodeList[4]);
+		nodeList[3].adjacents.AddLast(nodeList[5]);
 		
 		//Add adjacent nodes for node5
-		currentNode.Value.adjacents.AddLast(node4);
-		currentNode.Value.adjacents.AddLast(node6);
-		currentNode = currentNode.Next;
+		nodeList[4].adjacents.AddLast(nodeList[3]);
+		nodeList[4].adjacents.AddLast(nodeList[5]);
 		
 		//Add adjacent nodes for node6
-		currentNode.Value.adjacents.AddLast(node4);
-		currentNode.Value.adjacents.AddLast(node5);
-		currentNode = currentNode.Next;
+		nodeList[5].adjacents.AddLast(nodeList[3]);
+		nodeList[5].adjacents.AddLast(nodeList[4]);
 		
 		//Add adjacent nodes for node7
-		currentNode.Value.adjacents.AddLast(node8);
-		currentNode.Value.adjacents.AddLast(node9);
-		currentNode = currentNode.Next;
+		nodeList[6].adjacents.AddLast(nodeList[7]);
+		nodeList[6].adjacents.AddLast(nodeList[8]);
 		
 		//Add adjacent nodes for node8
-		currentNode.Value.adjacents.AddLast(node7);
-		currentNode.Value.adjacents.AddLast(node9);
-		currentNode = currentNode.Next;
+		nodeList[7].adjacents.AddLast(nodeList[6]);
+		nodeList[7].adjacents.AddLast(nodeList[8]);
 		
 		//Add adjacent nodes for node9
-		currentNode.Value.adjacents.AddLast(node7);
-		currentNode.Value.adjacents.AddLast(node8);
-		currentNode.Value.adjacents.AddLast(node10);
-		currentNode.Value.adjacents.AddLast(node11);
-		currentNode = currentNode.Next;
+		nodeList[8].adjacents.AddLast(nodeList[6]);
+		nodeList[8].adjacents.AddLast(nodeList[7]);
+		nodeList[8].adjacents.AddLast(nodeList[9]);
+		nodeList[8].adjacents.AddLast(nodeList[10]);
 		
 		//Add adjacent nodes for node10
-		currentNode.Value.adjacents.AddLast(node9);
-		currentNode.Value.adjacents.AddLast(node11);
-		currentNode = currentNode.Next;
+		nodeList[9].adjacents.AddLast(nodeList[8]);
+		nodeList[9].adjacents.AddLast(nodeList[10]);
 		
 		//Add adjacent nodes for node11
-		currentNode.Value.adjacents.AddLast(node9);
-		currentNode.Value.adjacents.AddLast(node10);
-		currentNode = currentNode.Next;
-		
-		
-		currentNode = firstNode;
+		nodeList[10].adjacents.AddLast(nodeList[8]);
+		nodeList[10].adjacents.AddLast(nodeList[9]);
     }
-    public bool changeSelected(int val) {
-        if(val <= 0 || val > nodeList.Count) {
+    public void alertNotHidden(int index) {
+        Debug.Log("node unhidden: " + index);
+    }
+    public  bool changeSelected(int val) {
+        if(val <= 0 || val > nodeList.Length) {
             selected = -1;
             return false;
         }
         selected = val - 1;
         return true;
     }
+    // function which runs the game ticks, here for more control over tick rate
+    void tick() {
+        freeWhiteBloodCells += playerSpawnRate;
+        tickCount++;
+
+        Debug.Log("tick: " + tickCount);
+
+        //Temp variables for summing up node information
+        long tempFreeViruses = 0;
+        int tempWhiteBloodCount = 0;
+        int tempInfectedWhiteBloodCells = 0;
+        int tempUninfectedBodyCells = 0;
+        int tempInfectedBodyCells = 0;
+        int tempOrignalBodyCellCount = 0;
+
+        //Iterates through linkedlist of nodes
+        for(int i = 0; i < nodeList.Length; i++) {
+            bool unhidden = false;
+            nodeList[i].tick(out unhidden);
+
+            if (unhidden) {
+                alertNotHidden(i);
+            }
+
+            //Sums up information about each nodes
+            tempFreeViruses += nodeList[i].getFreeViruses();
+            tempWhiteBloodCount += nodeList[i].getWhiteBloodCount();
+            tempInfectedWhiteBloodCells += nodeList[i].getInfectedWhiteBloodCells();
+            tempUninfectedBodyCells += nodeList[i].getUninfectedBodyCells();
+            tempInfectedBodyCells += nodeList[i].getInfectedBodyCells();
+            tempOrignalBodyCellCount += nodeList[i].getOriginalCellCount();
+        }
+
+        totalFreeViruses = tempFreeViruses;
+        totalWhiteBloodCount = tempWhiteBloodCount;
+        totalInfectedWhiteBloodCells = tempInfectedWhiteBloodCells;
+        totalUninfectedBodyCells = tempUninfectedBodyCells;
+        totalInfectedBodyCells = tempInfectedBodyCells;
+        totalOrignalBodyCellCount = tempOrignalBodyCellCount;
+
+        scoreText.text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
+    }
     // Update is called once per frame
     void Update(){
 		if(!paused){	//Checks if unpaused
-			tickCount += 1;
-			freeWhiteBloodCells += playerSpawnRate;
-			
-			//Temp variables for summing up node information
-			long tempFreeViruses = 0;
-			int tempWhiteBloodCount = 0;
-			int tempInfectedWhiteBloodCells = 0;
-			int tempUninfectedBodyCells = 0;
-			int tempInfectedBodyCells = 0;
-			int tempOrignalBodyCellCount = 0;
-			
-			//Iterates through linkedlist of nodes
-			while(currentNode != null){
-				currentNode.Value.tick();
-				
-				//Sums up information about each nodes
-				tempFreeViruses += currentNode.Value.getFreeViruses();
-				tempWhiteBloodCount += currentNode.Value.getWhiteBloodCount();
-				tempInfectedWhiteBloodCells += currentNode.Value.getInfectedWhiteBloodCells();
-				tempUninfectedBodyCells += currentNode.Value.getUninfectedBodyCells();
-				tempInfectedBodyCells += currentNode.Value.getInfectedBodyCells();
-				tempOrignalBodyCellCount += currentNode.Value.getOriginalCellCount();
-				
-				//Changes to next node
-				currentNode = currentNode.Next;
-				
-			}
-		
-			totalFreeViruses = tempFreeViruses;
-			totalWhiteBloodCount = tempWhiteBloodCount;
-			totalInfectedWhiteBloodCells = tempInfectedWhiteBloodCells;
-			totalUninfectedBodyCells = tempUninfectedBodyCells;
-			totalInfectedBodyCells = tempInfectedBodyCells;
-			totalOrignalBodyCellCount = tempOrignalBodyCellCount;
-			
-			scoreText.text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
+            // moved code to tick() for control over ticks per sec
+            // control tick rate
+            float deltaTime = Time.time - timeLast;
+            float secondsPerTick = 1 / ticksPerSecond;
+            if (deltaTime > secondsPerTick) {
+                timeLast = timeLast + deltaTime;
+                tick();
+            }
 		}
     }
 	
 	public long getFreeViruses(){
+        // Debug.Log("getFV returning: " + (long)totalFreeViruses);
 		return (long)totalFreeViruses;
 	}
 	
@@ -279,8 +320,12 @@ public class MainGame : MonoBehaviour
 
 	public long getScore()
 	{
+        if(getTotalViruses() == 0) {
+            Debug.Log("getScore() called: getTotalViruses() is 0, returning 0");
+            return 0;
+        }
 		long a = getTickCount();
-		return (a / getTotalViruses()) * 100000;
+		return (a / getTotalViruses()) * getOrignalBodyCellCount();
 	}
 	
     public double getHealth() {

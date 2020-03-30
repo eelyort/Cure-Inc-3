@@ -60,17 +60,34 @@ public class Node {
 
         hidden = true;
     }
-    public Node(GameSettings set) {
-        updateSettings(set);
+    public Node(GameSettings set, bool addStartViruses) {
+        updateSettings(set, addStartViruses, true);
 
         hidden = true;
     }
+    // deletes all viruses
+    public void clearViruses() {
+        freeViruses = 0;
+        infectedWhiteBloodCells = 0;
+        infectedBodyCells = 0;
+        hidden = true;
+    }
+    // overload to change parameters through upgrades and whatnot
     public void updateSettings(GameSettings set) {
-        freeViruses = set.freeVirusStart;
-        whiteBloodCount = set.whiteBloodStart;
-        orignalBodyCellCount = set.bodyCells;
-        infectedBodyCells = set.infectBodyStart;
-        uninfectedBodyCells = this.orignalBodyCellCount - this.infectedBodyCells;
+        updateSettings(set, false, false);
+    }
+    public void updateSettings(GameSettings set, bool addStartViruses, bool starting) {
+        // should only set all these values once
+        if (starting) {
+            // add startViruses checks whether to start the cell as infected because not all nodes start affected
+            if (addStartViruses) {
+                freeViruses = set.freeVirusStart;
+                infectedBodyCells = set.infectBodyStart;
+            }
+            whiteBloodCount = set.whiteBloodStart;
+            uninfectedBodyCells = this.orignalBodyCellCount - this.infectedBodyCells;
+            orignalBodyCellCount = set.bodyCells;
+        }
 
         // settings for difficulty level
         dedVperWB = set.deadVirusperWhiteBlood;
@@ -93,9 +110,9 @@ public class Node {
     }
 
     // processes on tick
-    public int tick() {
+    public int tick(out bool unhidden) {
         // new code
-        return tickTwo();
+        return tickTwo(out unhidden);
 
         // old code
         // return tickOne();
@@ -103,12 +120,14 @@ public class Node {
     public void changeVirusCount(int x) {
         freeViruses = (ulong)((long)freeViruses + x);
     }
-    private int tickTwo() {
+    private int tickTwo(out bool unhidden) {
         // update hidden
+        unhidden = false;
         if (hidden) {
             double percentRand = Random.Range(0.0f, 1.0f);
             if (percentRand < ((long)freeViruses / breakEvenPoint)) {
                 hidden = false;
+                unhidden = true;
             }
         }
 
@@ -221,9 +240,7 @@ public class Node {
 
         // last few viruses get yeeted
         if((freeViruses + (ulong)(infectedBodyCells * FVperIC * chanceICbursts) + (ulong)(infectedWhiteBloodCells * FVperIC * chanceICbursts)) < (ulong)(whiteBloodCount * 5)) {
-            freeViruses = 0;
-            infectedWhiteBloodCells = 0;
-            infectedBodyCells = 0;
+            clearViruses();
         }
 
         // dieoff from overpop
