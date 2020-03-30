@@ -14,7 +14,8 @@ public class MainGame : MonoBehaviour
     // set in editor so can find everything u need
     public GameObject canvas;
     // set in Start() assuming above is filled
-	Text scoreText;
+	GameObject scoreText;
+    GameObject freeWhiteBloodCellText;
 	
 	bool paused = false;
 
@@ -66,7 +67,10 @@ public class MainGame : MonoBehaviour
         for (int i = 0; i < canvas.transform.childCount; i++) {
             GameObject curr = canvas.transform.GetChild(i).gameObject;
             if (curr.name == "TRText") {
-                scoreText = curr.GetComponent<Text>();
+                scoreText = curr;
+            }
+            else if(curr.name == "Free WBC Count Text") {
+                freeWhiteBloodCellText = curr;
             }
             // else if... for other needed values
         }
@@ -290,7 +294,12 @@ public class MainGame : MonoBehaviour
         totalInfectedBodyCells = tempInfectedBodyCells;
         totalOrignalBodyCellCount = tempOrignalBodyCellCount;
 
-        scoreText.text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
+        scoreText.GetComponent<Text>().text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
+
+        
+        freeWhiteBloodCellText.GetComponent<Text>().text = ("Free White Blood Cells: " + freeWhiteBloodCells);
+        freeWhiteBloodCellText.GetComponent<Text>().text = ("Reeee");
+        
     }
     // Update is called once per frame
     void Update(){

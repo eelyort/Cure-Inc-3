@@ -65,10 +65,10 @@ public class Node {
 
         hidden = true;
 
-        /*
+        
         string format = "Node(settings, {0}) called:\n  FV={1} | WB={2} | OBC={3} | iBC={4} | uiBC={5} | hidden={6}";
         Debug.Log(string.Format(format, addStartViruses, freeViruses, whiteBloodCount, orignalBodyCellCount, infectedBodyCells, uninfectedBodyCells, hidden));
-        */
+        
     }
     // deletes all viruses
     public void clearViruses() {
@@ -204,7 +204,7 @@ public class Node {
         // virus spread to adjacent nodes
         ranJiggle(out jiggle);
         int numMigrators = (int)(freeViruses * spreadPerFV * jiggle);
-        if (numMigrators > 0 && freeViruses > (ulong)breakEvenPoint) {
+        if (numMigrators > 0 && (freeViruses > (ulong)breakEvenPoint || Random.Range(0.0f, 1.0f) < 0.01)) {
             // which adjacent nodes to infect
             bool[] toInfect = new bool[adjacents.Count];
             int numSpread = 0;
