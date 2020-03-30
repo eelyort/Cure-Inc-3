@@ -14,7 +14,8 @@ public class MainGame : MonoBehaviour
     // set in editor so can find everything u need
     public GameObject canvas;
     // set in Start() assuming above is filled
-	Text scoreText;
+	GameObject scoreText;
+    GameObject freeWhiteBloodCellText;
 	
 	bool paused = false;
 
@@ -49,7 +50,7 @@ public class MainGame : MonoBehaviour
 	long tickCount = 0;
 
     // x ticks per second
-    int ticksPerSecond = 10;
+    int ticksPerSecond = 4;
     float timeLast;
 
     // which zone is currently selected, -1 is none
@@ -66,7 +67,10 @@ public class MainGame : MonoBehaviour
         for (int i = 0; i < canvas.transform.childCount; i++) {
             GameObject curr = canvas.transform.GetChild(i).gameObject;
             if (curr.name == "TRText") {
-                scoreText = curr.GetComponent<Text>();
+                scoreText = curr;
+            }
+            else if(curr.name == "Free WBC Count Text") {
+                freeWhiteBloodCellText = curr;
             }
             // else if... for other needed values
         }
@@ -85,7 +89,9 @@ public class MainGame : MonoBehaviour
             chanceICbursts = 0.1,
             spreadPerVirus = 0.005,
             whiteBloodResistance = 0.4,
-            breakEvenPoint = 15000
+            breakEvenPoint = 15000,
+
+            startInfectedNodes = 2
         };
         GameSettings casualSettings = new GameSettings {
             freeVirusStart = 1000,
@@ -100,7 +106,9 @@ public class MainGame : MonoBehaviour
             chanceICbursts = 0.1,
             spreadPerVirus = 0.005,
             whiteBloodResistance = 0.4,
-            breakEvenPoint = 15000
+            breakEvenPoint = 15000,
+
+            startInfectedNodes = 2
         };
         GameSettings insaneSettings = new GameSettings {
             // TODO
@@ -116,7 +124,9 @@ public class MainGame : MonoBehaviour
             chanceICbursts = 0.1,
             spreadPerVirus = 0.005,
             whiteBloodResistance = 0.4,
-            breakEvenPoint = 15000
+            breakEvenPoint = 15000,
+
+            startInfectedNodes = 2
         };
 
 
@@ -129,10 +139,20 @@ public class MainGame : MonoBehaviour
         HashSet<int> startInfected = new HashSet<int>();
         while(startInfected.Count < settings[difficulty].startInfectedNodes) {
             int rand = (int)Mathf.Min(10.1f, Random.Range(0.0f, (float)nodeList.Length));
+            Debug.Log(rand);
             if (!startInfected.Contains(rand)) {
                 startInfected.Add(rand);
             }
         }
+
+        // DEBUG --------------------------------
+        /*
+        Debug.Log("startInfected: " + startInfected);
+        foreach(int a in startInfected) {
+            Debug.Log("a: " + a);
+        }
+        */
+        // --------------------------------------
 
         //Create nodes
         for(int i = 0; i < 11; i++) {
@@ -231,10 +251,15 @@ public class MainGame : MonoBehaviour
     }
     // function which runs the game ticks, here for more control over tick rate
     void tick() {
+        // Debugging ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        /*
+        Debug.Log("tick: " + tickCount);
+        string format = "  {0,-2} | {1,-16} | {2,-16} | {3,-16} | {4,-16} | {5,-16} | {6,-16}";
+        */
+        // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         freeWhiteBloodCells += playerSpawnRate;
         tickCount++;
-
-        Debug.Log("tick: " + tickCount);
 
         //Temp variables for summing up node information
         long tempFreeViruses = 0;
@@ -269,7 +294,12 @@ public class MainGame : MonoBehaviour
         totalInfectedBodyCells = tempInfectedBodyCells;
         totalOrignalBodyCellCount = tempOrignalBodyCellCount;
 
-        scoreText.text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
+        scoreText.GetComponent<Text>().text = "SCORE: " + getScore() + "\nFREE WHITE BLOOD CELLS REMAINING: " + freeWhiteBloodCells;
+
+        
+        freeWhiteBloodCellText.GetComponent<Text>().text = ("Free White Blood Cells: " + freeWhiteBloodCells);
+        freeWhiteBloodCellText.GetComponent<Text>().text = ("Reeee");
+        
     }
     // Update is called once per frame
     void Update(){
@@ -277,9 +307,9 @@ public class MainGame : MonoBehaviour
             // moved code to tick() for control over ticks per sec
             // control tick rate
             float deltaTime = Time.time - timeLast;
-            float secondsPerTick = 1 / ticksPerSecond;
+            float secondsPerTick = 1 / (float)ticksPerSecond;
             if (deltaTime > secondsPerTick) {
-                timeLast = timeLast + deltaTime;
+                timeLast = timeLast + secondsPerTick;
                 tick();
             }
 		}
@@ -325,7 +355,7 @@ public class MainGame : MonoBehaviour
             return 0;
         }
 		long a = getTickCount();
-		return (a / getTotalViruses()) * getOrignalBodyCellCount();
+		return (long)(((double)a / getTotalViruses()) * getOrignalBodyCellCount());
 	}
 	
     public double getHealth() {

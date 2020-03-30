@@ -16,6 +16,7 @@ public struct GameSettings {
     public double spreadPerVirus;
     public double whiteBloodResistance;
     public int breakEvenPoint;
+
     public int startInfectedNodes;
 
     public int playerSpawnRate;
